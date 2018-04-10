@@ -18,7 +18,13 @@ private_parcel <- st_read(dsn = ".",
 addresses <- private_parcel %>% 
   select(Planning, Master__35, Master__36, Improvem_1, Land.Value, Area_, Acres, Stand_Id)
 
-colnames(addresses) <- c("ParcelID", "Addr1", "Addr2", "Improvement", "LandValue", "Area", "Acres", "PublicStand")
+
+  
+colnames(addresses) <- c("ParcelID", "Addr1", "Addr2", "Improvement", "LandValue", "Area", "Acres", "PublicStand", "geometry")
+
+addresses1 <- na.omit(addresses)
+
+addresses1 <- addresses1[!(addresses1$ParcelID ==1159),]
 
 # Define UI for application that draws a histogram
 ui <- fluidPage(
@@ -29,10 +35,10 @@ ui <- fluidPage(
    # Sidebar with a Address Sections
    sidebarLayout(
       sidebarPanel(
-         selectizeInput("Address",
-                     "Type your address:",
-                     addresses$Addr1,
-                     multiple = FALSE,
+         selectInput('Addr1',
+                     'Type your address:',
+                     unique1,
+                     multiple = TRUE,
                      selectize = TRUE)
       ),
       
@@ -48,7 +54,7 @@ server <- function(input, output) {
    
    output$Output1 <- renderPrint(
       # just print the called address
-      input$Address)
+      input$Addr1)
 }
 
 # Run the application 
