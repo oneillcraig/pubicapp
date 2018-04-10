@@ -45,7 +45,7 @@ ui <- fluidPage(
       
       # Show the address searched for
       mainPanel(
-         verbatimTextOutput("Output1")
+         tableOutput("Output1")
       )
    )
 )
@@ -53,9 +53,15 @@ ui <- fluidPage(
 # Define server logic required to draw a histogram
 server <- function(input, output) {
    
-   output$Output1 <- renderPrint(
-      # just print the called address
-      input$Addr1)
+  df <- reactive({
+    a <- subset(addresses1, Addr1 == input$Addr1) %>% 
+      select(Addr1, Addr2, geometry)
+    return(a)
+  })
+  
+   output$Output1 <- renderTable(df())
+      # just print the city related to the addr
+      
 }
 
 # Run the application 
