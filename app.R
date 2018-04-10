@@ -63,22 +63,27 @@ ui <- fluidPage(
             submitButton("Look up Info")
      ),
      column(4,
-            hr("City, State, Zip Code"),
+            hr(),
+            h4("City, State, Zip Code"),
             tableOutput("Address2")
      ),
      column(4,
+            hr(),
             h4(),
-            p("Confirm Address")
+            h4("Confirm Address"),
+            p("Check to make sure your address looks right!")
      )
    ),
    fluidRow(
      column(4,
+            hr(),
             h4("Land Value"),
             p("This is the value of your land, not including improvements, structures, etc")
             
      ),
      column(4,
-            hr("Predicted Land Value"),
+            hr(),
+            h4("Predicted Land Value"),
             textOutput("LandVal1")
             ),
      column(4,
@@ -89,18 +94,37 @@ ui <- fluidPage(
 
    fluidRow(
      column(4,
+            hr(),
             h4("Improvements Value"),
             p("This is the predicted Improvements Value for your Parcel")
             ),
      column(4,
-            hr("Predicted Improvements"),
+            hr(),
+            h4("Predicted Improvements"),
             textOutput("Improve1")
      ),
      column(4,
             hr(),
-            numericInput("LandValue", "InputLV", value = 0)
+            numericInput("LandValue", "InputLV", value = 0, step = NA)
      )
-   )        
+   ),
+   fluidRow(
+     column(4,
+            hr(),
+            h4("Calculated"),
+            p("Total Property Value (Sum of Land Value + Improvements")
+            
+     ),
+     column(4,
+            hr(),
+            h4("Predicted Total Value"),
+            textOutput("TotVal1")
+     ),
+     column(4,
+            hr(),
+            numericInput("TotVal2", "Custom Total Value", value = 0)
+     )
+   )
 ) 
 
 
@@ -122,7 +146,16 @@ server <- function(input, output) {
   output$Address2 <- renderTable({
     Address2 <- addresses2$Addr2[addresses2$Addr1 %in% input$"Addr1"]
     
+  }, colnames = FALSE)
+  
+  output$TotVal1 <- renderText({
+    land <- addresses2$LandValue[addresses2$Addr1 %in% input$"Addr1"]
+    land <- as.vector(land)
+    Impr <- addresses2$Improvement[addresses2$Addr1 %in% input$"Addr1"]
+    Impr <- as.vector(Impr)
+    paste("This is the result =", land+Impr)
   })
+    
   
   #Addr2 <- reactive({addresses2[addresses2$Addr1 %in% input$"Addr1", ]}) 
   
