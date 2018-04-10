@@ -32,38 +32,105 @@ addresses2 <- addresses1 %>%
 
 # Define UI for application that draws a histogram
 ui <- fluidPage(
-   
+   br(),
+   fluidRow(
    # Application title
-   titlePanel("Property Fire Risk Calculator Test"),
+   column(4,
+     h4("Search Property"),
+     p("Look up expected Values for your Property")
+   ),
    
    # Sidebar with a Address Sections
-   sidebarLayout(
-      sidebarPanel(
-         selectInput('Addr1',
-                     'Type your address:',
-                     choices = unique1,
-                     multiple = TRUE,
-                     selectize = TRUE),
-         submitButton("Look up City")
-      ),
-      
-      # Show the address searched for
-      mainPanel(
-         tableOutput("Output1")
-      )
-   )
-)
+   column(4,
+          h4("Expected Values"),
+          p("These are predicted values for your property")
+   ),
+   
+   column(4,
+          h4("Enter Custom Values"),
+          p("Enter Custom Values if you feel predicted values are inaccurate")
+          )
+   ),
+   #Address Confirmation
+   fluidRow(
+     column(4,
+            hr(),
+            selectInput('Addr1',
+                        'Type your address:',
+                        choices = addresses2$Addr1,
+                        multiple = TRUE,
+                        selectize = TRUE),
+            submitButton("Look up Info")
+     ),
+     column(4,
+            hr("City, State, Zip Code"),
+            tableOutput("Address2")
+     ),
+     column(4,
+            h4(),
+            p("Confirm Address")
+     )
+   ),
+   fluidRow(
+     column(4,
+            h4("Land Value"),
+            p("This is the value of your land, not including improvements, structures, etc")
+            
+     ),
+     column(4,
+            hr("Predicted Land Value"),
+            textOutput("LandVal1")
+            ),
+     column(4,
+            hr(),
+            numericInput("landvalue", "Custom LandValue", value = 0)
+     )
+   ),
+
+   fluidRow(
+     column(4,
+            h4("Improvements Value"),
+            p("This is the predicted Improvements Value for your Parcel")
+            ),
+     column(4,
+            hr("Predicted Improvements"),
+            textOutput("Improve1")
+     ),
+     column(4,
+            hr(),
+            numericInput("LandValue", "InputLV", value = 0)
+     )
+   )        
+) 
+
 
 # Define server logic required to draw a histogram
 server <- function(input, output) {
-   
-  Output1 <- reactive({addresses2[addresses2$Addr1 %in% input$"Addr1", ]}) #%>% 
+  
+  output$LandVal1 <- renderText({
+    W <- addresses2$LandValue[addresses2$Addr1 %in% input$"Addr1"]
+    as.vector(W)
+  
+    })
+  
+  output$Improve1 <- renderText({
+    Imp1 <- addresses2$Improvement[addresses2$Addr1 %in% input$"Addr1"]
+    as.vector(Imp1)
     
-  #select(Output1, Addr1, Addr2, Improvement, LandValue)
+  })
+  
+  output$Address2 <- renderTable({
+    Address2 <- addresses2$Addr2[addresses2$Addr1 %in% input$"Addr1"]
     
-  output$Output1 <- renderTable(Output1())
-      # just print the city related to the addr
+  })
+  
+  #Addr2 <- reactive({addresses2[addresses2$Addr1 %in% input$"Addr1", ]}) 
+  
+  #Output2 <- reactive({addresses2[addresses2$Addr1 %in% input$"Addr1", ]})
+  
+  #output$Output1 <- renderTable(Output1())
       
+  #output$Output2 <- renderTable(Output2())    
 }
 
 # Run the application 
