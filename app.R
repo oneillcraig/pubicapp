@@ -27,7 +27,8 @@ addresses1 <- na.omit(addresses)
 addresses1 <- addresses1[!(addresses1$ParcelID ==1159),]
 
 addresses2 <- addresses1 %>% 
-  st_set_geometry(NULL)
+  st_set_geometry(NULL) %>% 
+  select(Addr1, Addr2, Improvement, LandValue)
 
 # Define UI for application that draws a histogram
 ui <- fluidPage(
@@ -56,7 +57,9 @@ ui <- fluidPage(
 # Define server logic required to draw a histogram
 server <- function(input, output) {
    
-  Output1 <- reactive({addresses2[addresses2$Addr1 %in% input$"Addr1", ]})
+  Output1 <- reactive({addresses2[addresses2$Addr1 %in% input$"Addr1", ]}) #%>% 
+    
+  #select(Output1, Addr1, Addr2, Improvement, LandValue)
     
   output$Output1 <- renderTable(Output1())
       # just print the city related to the addr
