@@ -37,9 +37,10 @@ ui <- fluidPage(
       sidebarPanel(
          selectInput('Addr1',
                      'Type your address:',
-                     unique1,
+                     choices = unique1,
                      multiple = TRUE,
-                     selectize = TRUE)
+                     selectize = TRUE),
+         submitButton("Look up City")
       ),
       
       # Show the address searched for
