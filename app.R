@@ -85,7 +85,7 @@ ui <- fluidPage(
      column(4,
             hr(),
             h4("Predicted Land Value"),
-            textOutput("LandVal1")
+            tableOutput("LandVal1")
             ),
      column(4,
             hr(),
@@ -102,7 +102,7 @@ ui <- fluidPage(
      column(4,
             hr(),
             h4("Predicted Improvements"),
-            textOutput("Improve1")
+            tableOutput("Improve1")
      ),
      column(4,
             hr(),
@@ -119,7 +119,7 @@ ui <- fluidPage(
      column(4,
             hr(),
             h4("Predicted Total Value"),
-            tableOutput("Table1")
+            tableOutput("Total1")
      ),
      column(4,
             hr(),
@@ -132,43 +132,81 @@ ui <- fluidPage(
 # Define server logic required to draw a histogram
 server <- function(input, output) {
 
-    addrServ <- addresses2
-    colnames(addrServ) <- c("add1", "add2", "Imp", "LV")
+    addresses2 <- addresses1 %>% 
+      st_set_geometry(NULL) %>% 
+      select(Addr1, Addr2, Improvement, LandValue)
+    addresses2$LandValue <- as.numeric(levels(addresses2$LandValue))[addresses2$LandValue]
+    addresses2$Improvement <- as.numeric(levels(addresses2$Improvement))[addresses2$Improvement]
+    
       
     addrInput <- reactive({
-      a <- subset(addrServ, add1 == input$Addr1)%>% 
-        select(LV)
+      a <- addresses2 %>% 
+        subset(Addr1 == input$Addr1)%>% 
+        select(LandValue)
       return(a)
     })
     
     output$Table1 <- renderTable(addrInput(),
                                  colnames = FALSE)
+    
+    addrLandValue <- reactive({
+      a <- addresses2 %>% 
+        subset(Addr1 == input$Addr1)%>% 
+        select(LandValue)
+      return(a)
+    })
+    
+    output$LandVal1 <- renderTable(addrLandValue(),
+                                 colnames = FALSE)
+    
+    addrImprove <- reactive({
+      b <- addresses2 %>% 
+        subset(Addr1 == input$Addr1)%>% 
+        select(Improvement)
+      return(b)
+    })
+    
+    output$Improve1 <- renderTable(addrImprove(),
+                                 colnames = FALSE)
 
   
-    output$LandVal1 <- renderText({
-    W <- addresses2$LandValue[addresses2$Addr1 %in% input$"Addr1"]
-    as.vector(W)
+    #output$LandVal1 <- renderText({
+    #W <- addresses2$LandValue[addresses2$Addr1 %in% input$"Addr1"]
+    #as.vector(W)
   
-    })
+    #})
   
-  output$Improve1 <- renderText({
-    Imp1 <- addresses2$Improvement[addresses2$Addr1 %in% input$"Addr1"]
-    as.vector(Imp1)
+  #output$Improve1 <- renderText({
+    #Imp1 <- addresses2$Improvement[addresses2$Addr1 %in% input$"Addr1"]
+    #as.vector(Imp1)
     
-  })
+  #})
   
   output$Address2 <- renderTable({
     Address2 <- addresses2$Addr2[addresses2$Addr1 %in% input$"Addr1"]
     
   }, colnames = FALSE)
+
   
-  output$TotVal1 <- renderText({
-    land <- addresses2$LandValue[addresses2$Addr1 %in% input$"Addr1"]
-    land <- as.vector(land)
-    Impr <- addresses2$Improvement[addresses2$Addr1 %in% input$"Addr1"]
-    Impr <- as.vector(Impr)
-    paste("This is the result =", land+Impr)
+  addrTotal <- reactive({
+    a <- addresses2 %>% 
+      subset(Addr1 == input$Addr1)%>% 
+      select(Improvement, LandValue) %>% 
+      mutate(Total = Improvement + LandValue) %>% 
+      select(Total)
+    return(a)
   })
+  
+  output$Total1 <- renderTable(addrTotal(),
+                                 colnames = FALSE)
+    
+  #output$TotVal1 <- renderText({
+   # land <- addresses2$LandValue[addresses2$Addr1 %in% input$"Addr1"]
+  #  land <- as.vector(land)
+   # Impr <- addresses2$Improvement[addresses2$Addr1 %in% input$"Addr1"]
+    #Impr <- as.vector(Impr)
+    #paste("This is the result =", land+Impr)
+  #})
     
   
   #Addr2 <- reactive({addresses2[addresses2$Addr1 %in% input$"Addr1", ]}) 
