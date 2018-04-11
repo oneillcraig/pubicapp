@@ -29,6 +29,11 @@ colnames(fireignit) <- c("ParcelID", "GA25", "PA25")
 
 addresses <- merge(addresses, fireignit, by = "ParcelID")
 
+fireloss <- read_csv("HVRAseverityloss.csv")
+
+colnames(fireloss) <- c("ParcelID", "NT_Loss", "Opt21_Loss")
+
+addresses <- merge(addresses, fireloss, by = "ParcelID")
 
 addresses1 <- na.omit(addresses)
 
@@ -36,7 +41,7 @@ addresses1 <- addresses1[!(addresses1$ParcelID ==1159),]
 
 addresses2 <- addresses1 %>% 
   st_set_geometry(NULL) %>% 
-  select(Addr1, Addr2, Improvement, LandValue)
+  select(Addr1, Addr2, Improvement, LandValue, GA25, PA25, NT_Loss, Opt21_Loss)
 
 # Define UI for application that draws a histogram
 ui <- fluidPage(
@@ -66,7 +71,7 @@ ui <- fluidPage(
             selectizeInput('Addr1',
                         'Type your address:',
                         choices = addresses2$Addr1,
-                        multiple = TRUE,
+                        multiple = FALSE,
                         #selectize = TRUE,
                         options = list(
                           maxOptions = 1,
@@ -153,18 +158,53 @@ ui <- fluidPage(
      ),
      column(4,
             hr(),
-            sliderInput("FireIgnit2", "Custom FireIgnit Value", min = 0.01, max = 0.75, value = 0.15, step = 0.01)
+            #uiOutput("FireIgnitDef"),
+            sliderInput("recieveIgnit", "Custom FireIgnit Value", min = 0.01, max = 0.75, value = 0.15, step = 0.01)
+     )
+   ),
+   fluidRow(
+     column(4,
+            hr(),
+            h4("Predicted Fire Severity"),
+            p("Predicted Damage Potential of Fire should Fire Occur without Treatment!")
+            
+     ),
+     column(4,
+            hr(),
+            h4("Fire Severity Probability"),
+            tableOutput("FireSev1")
+     ),
+     column(4,
+            hr(),
+            sliderInput("FireSev2", "Custom FireSev Value", min = 0.1, max = 1, value = 0.4, step = 0.1)
+     )
+   ),
+   fluidRow(
+     column(4,
+            hr(),
+            h4("Calculated"),
+            p("Total Property Value Loss (Total Value * Fire Ignition Prob * Fire Severity)")
+            
+     ),
+     column(4,
+            hr(),
+            h4("Predicted Loss by 2050 if No Treatment is done!"),
+            tableOutput("Loss1")
+     ),
+     column(4,
+            hr(),
+            numericInput("Loss2", "Custom Loss Value", value = 0)
      )
    )
 ) 
 
 
 # Define server logic required to draw a histogram
-server <- function(input, output) {
+server <- function(input, output, session) {
 
     addresses2 <- addresses1 %>% 
       st_set_geometry(NULL) %>% 
-      select(Addr1, Addr2, Improvement, LandValue, GA25, PA25)
+      select(Addr1, Addr2, Improvement, LandValue, GA25, PA25, NT_Loss, Opt21_Loss)
     addresses2$LandValue <- as.numeric(levels(addresses2$LandValue))[addresses2$LandValue]
     addresses2$Improvement <- as.numeric(levels(addresses2$Improvement))[addresses2$Improvement]
     
@@ -241,6 +281,52 @@ server <- function(input, output) {
   })
   
   output$FireIgnit1 <- renderTable(addrIgnit(),
+                               colnames = FALSE)
+  
+  
+  DefaultIgnit <- reactive({
+    a <- addresses2 %>% 
+      subset(Addr1 == input$Addr1) %>% 
+      select(GA25)
+    return(a)
+  })
+  
+  observe({
+    DefaultIgnit <- reactive({
+    a <- addresses2 %>% 
+      subset(Addr1 == input$Addr1) %>% 
+      select(GA25)
+    return(a)
+  })
+    def <- DefaultIgnit
+    updateSliderInput(session, "recieveIgnit", value = def, min = 0.01, max = 0.75, step = 0.01)
+  })
+  
+  #output$FireIgnitDef <- renderUI({
+    #sliderInput("FireIgnit2", "Custom FireIgnit Value", min = 0.01, max = 0.75, value = DefaultIgnit , step = 0.01)
+  #})
+  
+  addrHVRA <- reactive({
+    a <- addresses2 %>% 
+      subset(Addr1 == input$Addr1)%>% 
+      select(NT_Loss) 
+    return(a)
+  })
+  
+  output$FireSev1 <- renderTable(addrHVRA(),
+                                   colnames = FALSE)
+  
+  addrLoss <- reactive({
+    a <- addresses2 %>% 
+      subset(Addr1 == input$Addr1)%>% 
+      select(Improvement, LandValue, GA25, NT_Loss) %>% 
+      mutate(Tot_NT_Loss = (Improvement + LandValue) * GA25 * NT_Loss) %>% 
+      select(Tot_NT_Loss)
+    a[,1] <- sapply(a[,1], function(x) paste0("$",x))
+    return(a)
+  })
+  
+  output$Loss1 <- renderTable(addrLoss(),
                                colnames = FALSE)
     
   #output$TotVal1 <- renderText({
