@@ -10,6 +10,7 @@
 library(shiny)
 library(sf)
 library(tidyverse)
+library(DT)
 
 ##Data
 private_parcel <- st_read(dsn = ".",
@@ -118,7 +119,7 @@ ui <- fluidPage(
      column(4,
             hr(),
             h4("Predicted Total Value"),
-            textOutput("TotVal1")
+            tableOutput("Table1")
      ),
      column(4,
             hr(),
@@ -130,8 +131,21 @@ ui <- fluidPage(
 
 # Define server logic required to draw a histogram
 server <- function(input, output) {
+
+    addrServ <- addresses2
+    colnames(addrServ) <- c("add1", "add2", "Imp", "LV")
+      
+    addrInput <- reactive({
+      a <- subset(addrServ, add1 == input$Addr1)%>% 
+        select(LV)
+      return(a)
+    })
+    
+    output$Table1 <- renderTable(addrInput(),
+                                 colnames = FALSE)
+
   
-  output$LandVal1 <- renderText({
+    output$LandVal1 <- renderText({
     W <- addresses2$LandValue[addresses2$Addr1 %in% input$"Addr1"]
     as.vector(W)
   
@@ -161,9 +175,11 @@ server <- function(input, output) {
   
   #Output2 <- reactive({addresses2[addresses2$Addr1 %in% input$"Addr1", ]})
   
-  #output$Output1 <- renderTable(Output1())
+  #output$Table1 <- renderDataTable({
+    #reactive({addresses2[addresses2$Addr1 %in% input$Addr1]})
+   # })
       
-  #output$Output2 <- renderTable(Output2())    
+  #output$Table2 <- renderTable(Output2())    
 }
 
 # Run the application 
