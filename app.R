@@ -23,6 +23,13 @@ addresses <- private_parcel %>%
   
 colnames(addresses) <- c("ParcelID", "Addr1", "Addr2", "Improvement", "LandValue", "Area", "Acres", "PublicStand", "geometry")
 
+fireignit <- read_csv("fireignitionrisk.csv")
+
+colnames(fireignit) <- c("ParcelID", "GA25", "PA25")
+
+addresses <- merge(addresses, fireignit, by = "ParcelID")
+
+
 addresses1 <- na.omit(addresses)
 
 addresses1 <- addresses1[!(addresses1$ParcelID ==1159),]
@@ -56,11 +63,17 @@ ui <- fluidPage(
    fluidRow(
      column(4,
             hr(),
-            selectInput('Addr1',
+            selectizeInput('Addr1',
                         'Type your address:',
                         choices = addresses2$Addr1,
                         multiple = TRUE,
-                        selectize = TRUE),
+                        #selectize = TRUE,
+                        options = list(
+                          maxOptions = 1,
+                          placeholder = 'Please type address here',
+                          onInitialize = I('function() { this.setValue(""); }')
+                        )
+            ),
             submitButton("Look up Info")
      ),
      column(4,
@@ -125,6 +138,23 @@ ui <- fluidPage(
             hr(),
             numericInput("TotVal2", "Custom Total Value", value = 0)
      )
+   ),
+   fluidRow(
+     column(4,
+            hr(),
+            h4("Predicted Fire Ignition"),
+            p("Probability of Fire Occuring on Land through 2050")
+            
+     ),
+     column(4,
+            hr(),
+            h4("Fire Ignition Probability"),
+            tableOutput("FireIgnit1")
+     ),
+     column(4,
+            hr(),
+            sliderInput("FireIgnit2", "Custom FireIgnit Value", min = 0.01, max = 0.75, value = 0.15, step = 0.01)
+     )
    )
 ) 
 
@@ -134,25 +164,26 @@ server <- function(input, output) {
 
     addresses2 <- addresses1 %>% 
       st_set_geometry(NULL) %>% 
-      select(Addr1, Addr2, Improvement, LandValue)
+      select(Addr1, Addr2, Improvement, LandValue, GA25, PA25)
     addresses2$LandValue <- as.numeric(levels(addresses2$LandValue))[addresses2$LandValue]
     addresses2$Improvement <- as.numeric(levels(addresses2$Improvement))[addresses2$Improvement]
     
       
-    addrInput <- reactive({
-      a <- addresses2 %>% 
-        subset(Addr1 == input$Addr1)%>% 
-        select(LandValue)
-      return(a)
-    })
+    #addrInput <- reactive({
+      #a <- addresses2 %>% 
+        #subset(Addr1 == input$Addr1)%>% 
+        #select(LandValue)
+      #return(a)
+    #})
     
-    output$Table1 <- renderTable(addrInput(),
-                                 colnames = FALSE)
+    #output$Table1 <- renderTable(addrInput(),
+                                 #colnames = FALSE)
     
     addrLandValue <- reactive({
       a <- addresses2 %>% 
         subset(Addr1 == input$Addr1)%>% 
         select(LandValue)
+      a[,1] <- sapply(a[,1], function(x) paste0("$",x))
       return(a)
     })
     
@@ -163,6 +194,7 @@ server <- function(input, output) {
       b <- addresses2 %>% 
         subset(Addr1 == input$Addr1)%>% 
         select(Improvement)
+      b[,1] <- sapply(b[,1], function(x) paste0("$",x))
       return(b)
     })
     
@@ -194,11 +226,22 @@ server <- function(input, output) {
       select(Improvement, LandValue) %>% 
       mutate(Total = Improvement + LandValue) %>% 
       select(Total)
+    a[,1] <- sapply(a[,1], function(x) paste0("$",x))
     return(a)
   })
   
   output$Total1 <- renderTable(addrTotal(),
                                  colnames = FALSE)
+  
+  addrIgnit <- reactive({
+    a <- addresses2 %>% 
+      subset(Addr1 == input$Addr1)%>% 
+      select(GA25) 
+    return(a)
+  })
+  
+  output$FireIgnit1 <- renderTable(addrIgnit(),
+                               colnames = FALSE)
     
   #output$TotVal1 <- renderText({
    # land <- addresses2$LandValue[addresses2$Addr1 %in% input$"Addr1"]
