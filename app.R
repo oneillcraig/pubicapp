@@ -158,8 +158,8 @@ ui <- fluidPage(
      ),
      column(4,
             hr(),
-            #uiOutput("FireIgnitDef"),
-            sliderInput("recieveIgnit", "Custom FireIgnit Value", min = 0.01, max = 0.75, value = 0.15, step = 0.01)
+            uiOutput("IgnitSlider"),
+            sliderInput("upSlider", "Custom FireIgnit Value", min = 0.01, max = 0.75, value = 0.15, step = 0.01)
      )
    ),
    fluidRow(
@@ -208,6 +208,12 @@ server <- function(input, output, session) {
     addresses2$LandValue <- as.numeric(levels(addresses2$LandValue))[addresses2$LandValue]
     addresses2$Improvement <- as.numeric(levels(addresses2$Improvement))[addresses2$Improvement]
     
+    
+    #control <- input$Addr1
+    
+    #GA2 <- addresses2 %>% 
+      #subset(Addr1 == control) %>% 
+      #select(GA2)
       
     #addrInput <- reactive({
       #a <- addresses2 %>% 
@@ -283,7 +289,6 @@ server <- function(input, output, session) {
   output$FireIgnit1 <- renderTable(addrIgnit(),
                                colnames = FALSE)
   
-  
   DefaultIgnit <- reactive({
     a <- addresses2 %>% 
       subset(Addr1 == input$Addr1) %>% 
@@ -291,20 +296,21 @@ server <- function(input, output, session) {
     return(a)
   })
   
-  observe({
-    DefaultIgnit <- reactive({
-    a <- addresses2 %>% 
-      subset(Addr1 == input$Addr1) %>% 
-      select(GA25)
-    return(a)
-  })
-    def <- DefaultIgnit
-    updateSliderInput(session, "recieveIgnit", value = def, min = 0.01, max = 0.75, step = 0.01)
+  output$IgnitSlider <- renderUI({
+    sliderInput("FireIgnit2", 
+                "Custom FireIgnit Value", 
+                min = 0.01, 
+                max = 0.75, 
+                value = YYY, 
+                step = 0.01)
   })
   
-  #output$FireIgnitDef <- renderUI({
-    #sliderInput("FireIgnit2", "Custom FireIgnit Value", min = 0.01, max = 0.75, value = DefaultIgnit , step = 0.01)
-  #})
+  #updateSliderInput(session, "upSlider",
+                    #label = "FireIgnit2",
+                    #value = GA25,
+                    #min = 0.01,
+                    #max = 0.75,
+                    #step = 0.001)
   
   addrHVRA <- reactive({
     a <- addresses2 %>% 
