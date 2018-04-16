@@ -10,7 +10,7 @@
 library(shiny)
 library(sf)
 library(tidyverse)
-library(DT)
+#library(DT)
 
 ##Data
 private_parcel <- st_read(dsn = ".",
@@ -305,12 +305,6 @@ server <- function(input, output, session) {
                 step = 0.01)
   })
   
-  #updateSliderInput(session, "upSlider",
-                    #label = "FireIgnit2",
-                    #value = GA25,
-                    #min = 0.01,
-                    #max = 0.75,
-                    #step = 0.001)
   
   addrHVRA <- reactive({
     a <- addresses2 %>% 
