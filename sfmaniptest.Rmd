@@ -34,3 +34,25 @@ addresses <- addresses %>%
 
 ```
 Notes:  Could not pull in spatial data from a different drive (G drive for SS), would cause R to crash everytime.
+
+
+#merging address with fire ignition risk
+```{r}
+fireignit <- read_csv("fireignitionrisk.csv")
+
+colnames(fireignit) <- c("ParcelID", "GA25", "PA25")
+
+addresses <- merge(addresses, fireignit, by = "ParcelID")
+```
+
+#merging address with hvra loss/severity info
+
+```{r}
+fireloss <- read_csv("HVRAseverityloss.csv")
+
+colnames(fireloss) <- c("ParcelID", "NT_Loss", "Opt21_Loss")
+
+addresses <- merge(addresses, fireloss, by = "ParcelID")
+
+```
+
