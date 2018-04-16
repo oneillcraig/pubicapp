@@ -1,0 +1,12 @@
+name: pubicapp
+title: pubicapp
+username:
+account: savingsierras
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 323928
+bundleId: 1321637
+url: https://savingsierras.shinyapps.io/pubicapp/
+when: 1523898806.93768
+asMultiple: FALSE
+asStatic: FALSE
