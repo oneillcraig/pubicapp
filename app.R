@@ -10,7 +10,7 @@
 library(shiny)
 library(sf)
 library(tidyverse)
-library(DT)
+#library(DT)
 
 ##Data
 private_parcel <- st_read(dsn = ".",
