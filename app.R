@@ -17,6 +17,7 @@ library(leaflet)
 library(sf)
 library(sp)
 library(raster)
+library(rgdal)
 library(tidyverse)
 library(shinycssloaders)
 
@@ -243,7 +244,7 @@ ui <- dashboardPage(
                 
                 
                 
-                box(includeText("forestcover.txt"), width = 12)
+                box(includeText("ForestCover.txt"), width = 12)
                 
                 
                 
