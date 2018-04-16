@@ -1,0 +1,1 @@
+Include here a description of what's going on in this tab for the changes in fire severity on private lands. Modify this by changing the text doc called fireprivate.txt in the folder where all the stuff's in

@@ -1,0 +1,1 @@
+This figure shows the change in fire regime compared to historical data. Users can select the level of change that they wish the map to show.

@@ -1,0 +1,4 @@
+Include here a description of what's going on in this tab. Modify this by changing the text doc called topographical.txt in the folder where all the stuff's in
+
+
+If we can't figure out how to change the legends so that aspect says degrees, elevation meters etc..., include that information here.
