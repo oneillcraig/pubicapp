@@ -17,7 +17,6 @@ library(leaflet)
 library(sf)
 library(sp)
 library(raster)
-library(rgdal)
 library(tidyverse)
 library(shinycssloaders)
 
@@ -175,7 +174,7 @@ ui <- dashboardPage(
       menuItem("Fire Severity on Public Lands", tabName = "tab_1"),
       menuItem("Fire Severity on Private Lands", tabName = "tab_5"),
       menuItem("Cost Benefit Analysis", tabName = "tab_6"),
-      menuItem("Cost Calcutor", tabName = "tab_8")
+      menuItem("Cost Calculator", tabName = "tab_8")
   
       )
       
@@ -244,7 +243,7 @@ ui <- dashboardPage(
                 
                 
                 
-                box(includeText("ForestCover.txt"), width = 12)
+                box(includeText("forestcover.txt"), width = 12)
                 
                 
                 
@@ -329,7 +328,7 @@ ui <- dashboardPage(
                                         onInitialize = I('function() { this.setValue(""); }')
                                       )
                        ),
-                       submitButton("Look up Info")
+                       actionButton("update", "Look up Info", icon("refresh"), class = "btn btn-primary")
                 ),
                 column(4,
                        hr(),
@@ -482,10 +481,14 @@ ui <- dashboardPage(
                        hr(),
                        numericInput("TreatmentCost2", "Custom Treatment Cost (Total, or should this be per acre?)", value = 0)
                 )
-              ))
+              )
+
+          )
       )
     )
   )
+
+
 
     
   
@@ -658,7 +661,7 @@ server <- function(input, output){
       geom_col(aes(fill = Discount_Rate)) +
       theme_bw(base_size = 13) +
       ylab("Cumulative Value ($US Millions)") +
-      xlab("Discount Rate %") + 
+      xlab("Discount Rate (%)") + 
       ggtitle("Value of Carbon Sequestration (in $US)") +
       theme(plot.title = element_text(hjust = 0.5)) +
       scale_y_continuous(expand = c(0,0), limits = (c(0, 15))) +
@@ -675,7 +678,7 @@ server <- function(input, output){
       geom_col(aes(fill = Discount_Rate)) +
       theme_bw(base_size = 13) +
       ylab("Net Value (US$ Millions)") +
-      xlab("Discount Rate %") + 
+      xlab("Discount Rate (%)") + 
       ggtitle("Value of Fuel Treatments (in $US)") +
       theme(plot.title = element_text(hjust = 0.5)) +
       scale_y_continuous(expand = c(0,0), limits = (c(0, 350))) +
@@ -712,10 +715,14 @@ server <- function(input, output){
       select(LandValue)
     a[,1] <- sapply(a[,1], function(x) paste0("$",x))
     return(a)
+    
+    
+    
   })
   
   output$LandVal1 <- renderTable(addrLandValue(),
                                  colnames = FALSE)
+  
   
   addrImprove <- reactive({
     b <- addresses2 %>% 
