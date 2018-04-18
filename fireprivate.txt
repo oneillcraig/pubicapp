@@ -1,1 +1,1 @@
-Include here a description of what's going on in this tab for the changes in fire severity on private lands. Modify this by changing the text doc called fireprivate.txt in the folder where all the stuff's in
+This figure shows fire severities under a scenario when no fuel treatments occur, and a scenario when 21% of the landscape is treated. Fire severities of 4, 5, and 6 indicate a high severity fire. 

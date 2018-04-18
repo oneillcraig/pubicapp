@@ -1,4 +1,1 @@
-Include here a description of what's going on in this tab. Modify this by changing the text doc called topographical.txt in the folder where all the stuff's in
-
-
-If we can't figure out how to change the legends so that aspect says degrees, elevation meters etc..., include that information here.
+This figure shows topographical information for private lands in the Dinkey Landscape. Users can select between Aspect (in degrees), Slope (in degrees), and elevation (in meters). These are factors that can significantly impact vegetation characteristics as well as fire behavior.

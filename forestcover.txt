@@ -1,1 +1,1 @@
-Include here a description of what's going on in this tab for the changes in forest cover. Modify this by changing the text doc called forestcover.txt in the folder where all the stuff's in
+This figure shows the dominant vegetation classes across the Dinkey Landscape, with private lands overlaying the map. Vegetation type can significantly impact fire behavior.
