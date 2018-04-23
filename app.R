@@ -38,25 +38,25 @@ addresses <- private %>%
 
 colnames(addresses) <- c("ParcelID", "Addr1", "Addr2", "Improvement", "LandValue", "Area", "Acres", "PublicStand", "geometry")
 
-fireignit <- read_csv("fireignitionrisk.csv")
+#fireignit <- read_csv("fireignitionrisk.csv")
 
-colnames(fireignit) <- c("ParcelID", "GA25", "PA25")
+#colnames(fireignit) <- c("ParcelID", "GA25", "PA25")
 
-addresses <- merge(addresses, fireignit, by = "ParcelID")
+#addresses <- merge(addresses, fireignit, by = "ParcelID")
 
-fireloss <- read_csv("HVRAseverityloss.csv")
+#fireloss <- read_csv("HVRAseverityloss.csv")
 
-colnames(fireloss) <- c("ParcelID", "NT_Loss", "Opt21_Loss")
+#colnames(fireloss) <- c("ParcelID", "NT_Loss", "Opt21_Loss")
 
-addresses <- merge(addresses, fireloss, by = "ParcelID")
+#addresses <- merge(addresses, fireloss, by = "ParcelID")
 
 addresses1 <- na.omit(addresses)
 
 addresses1 <- addresses1[!(addresses1$ParcelID ==1159),]
 
-addresses2 <- addresses1 %>% 
-  st_set_geometry(NULL) %>% 
-  select(Addr1, Addr2, Improvement, LandValue, GA25, PA25, NT_Loss, Opt21_Loss)
+#addresses2 <- addresses1 %>% 
+  #st_set_geometry(NULL) %>% 
+  #select(Addr1, Addr2, Improvement, LandValue, GA25, PA25, NT_Loss, Opt21_Loss)
 
 
 
@@ -153,7 +153,7 @@ color <- colorFactor(palette = c("#1a9850", "#91cf60", "#d9ef8b", "#fee08b", "#f
 
 
 
-dbHeader <- dashboardHeader(title = "Saving Sierras",
+dbHeader <- dashboardHeader(title = "SRCD Interactive Fire App",
                         
                             tags$li(a(href = 'https://www.savingsierras.com/',
                                       img(src = 'Bren-logo-horizontal.png',
@@ -161,7 +161,32 @@ dbHeader <- dashboardHeader(title = "Saving Sierras",
                                       style = "padding-top:10px; padding-bottom:10px;"),
                                     class = "dropdown"))
 
-# Define UI for application that draws a histogram
+##########
+#Cost Calculator Data Inputs
+#########
+
+addresses2 <- read_csv("addresses2.csv")
+addresses2$LandValue <- as.numeric(addresses2$LandValue)
+addresses2$Improvement <- as.numeric(addresses2$Improvement)
+addresses2$NT_HVRA <- as.numeric(addresses2$NT_HVRA)
+addresses2$Min_HVRA <- as.numeric(addresses2$Min_HVRA)
+addresses2$Med_HVRA <- as.numeric(addresses2$Med_HVRA)
+addresses2$Opt_HVRA <- as.numeric(addresses2$Opt_HVRA)
+
+addresses3 <- read_csv("addresses3.csv")
+addresses3$LandValue <- as.numeric(addresses3$LandValue)
+addresses3$Improvement <- as.numeric(addresses3$Improvement)
+addresses3$HVRA <- as.numeric(addresses3$HVRA)
+addresses3$TreatmentCost <- as.numeric(addresses3$TreatmentCost)
+addresses3$Ntbase <- as.numeric(addresses3$Ntbase)
+
+##########
+#End Cost Calculator INputs
+##########
+
+
+
+# UI Section Begins Here
 ui <- dashboardPage(skin = ("green"),
   
 
@@ -329,6 +354,10 @@ This figure shows the historical fire regimes across the Dinkey Landscape. Users
       ),
       tabItem(tabName = "tab_8",
               fluidRow(
+                br(),
+                h1("Cost Calculator demo")
+              ),
+              fluidRow(
                 # Application title
                 column(4,
                        h4("Search Property"),
@@ -345,6 +374,7 @@ This figure shows the historical fire regimes across the Dinkey Landscape. Users
                        h4("Enter Custom Values"),
                        p("Enter Custom Values if you feel predicted values are inaccurate")
                 )
+                
               ),
               #Address Confirmation
               fluidRow(
@@ -360,8 +390,8 @@ This figure shows the historical fire regimes across the Dinkey Landscape. Users
                                         placeholder = 'Please type address here',
                                         onInitialize = I('function() { this.setValue(""); }')
                                       )
-                       ),
-                       actionButton("update", "Look up Info", icon("refresh"), class = "btn btn-primary")
+                       )#,
+                       #submitButton("Look up Info")
                 ),
                 column(4,
                        hr(),
@@ -394,6 +424,7 @@ This figure shows the historical fire regimes across the Dinkey Landscape. Users
               ),
               
               fluidRow(
+                span(),
                 column(4,
                        hr(),
                        h4("Improvements Value"),
@@ -480,6 +511,259 @@ This figure shows the historical fire regimes across the Dinkey Landscape. Users
               fluidRow(
                 column(4,
                        hr(),
+                       h4("Choose Treatment Intensity"),
+                       p("Treatments are a community action!  If the community bands together to treat more land, then there is a higher likelihood of your property's fire risk decreases")
+                       
+                ),
+                column(4,
+                       hr(),
+                       selectInput("TreatExt",
+                                   "Choose Treatment Extent:",
+                                   choices = c("NT",
+                                               "Min",
+                                               "Mid",
+                                               "Opt"))
+                ),
+                column(4,
+                       hr(),
+                       p("After Selecting treatment, this is your probability for complete loss should fire occur on your parcel"),
+                       tableOutput("NewSev"),
+                       p("After selecting treatment, this is your expected losses through 2050"),
+                       tableOutput("NewDamages"),
+                       p("This is amount of money saved (negative = savings) from avoided fire damages through treatment"),
+                       tableOutput("DiffNT"),
+                       p("This is the 'evenly shared' cost of treatment based on desired treatment extent"),
+                       tableOutput("TreatChoice"),
+                       p("This is the difference between your treatment costs and savings (i dont know whats good maybe negative?)"),
+                       tableOutput("netgain")
+                )
+              ),
+              fluidRow(
+                column(4,
+                       hr(),
+                       h4("Treatment Costs"),
+                       p("Your Cost of Treating your land!")
+                       
+                ),
+                column(4,
+                       hr(),
+                       p("Estimated Treatment Cost based on Mechanical Thinning Parcel Area"),
+                       tableOutput("TreatmentCost1"),
+                       p("Estimated Treatment Cost based on Handthinning"),
+                       tableOutput("TreatmentcostsHT")
+                ),
+                column(4,
+                       hr(),
+                       numericInput("TreatmentCost2", "Custom Treatment Cost (Total, or should this be per acre?)", value = 0)
+                )
+              ),
+              fluidRow(
+                column(4,
+                       hr(),
+                       h4("Potential Avoided Fire Damage Savings"),
+                       p("The money you potentially save!  Not adjusted for NPV")
+                       
+                ),
+                column(4,
+                       hr(),
+                       p("Estimated based on Mechanical:"),
+                       tableOutput("SavingMech"),
+                       p("Estimated based on Handthinning:"),
+                       tableOutput("SavingHT")
+                ),
+                column(4,
+                       hr(),
+                       numericInput("TreatmentCost2", "Custom Treatment Cost (Total, or should this be per acre?)", value = 0)
+                )
+              ),
+              fluidRow(
+                br(),
+                h1("Cost Calculator demo")
+              ),
+              fluidRow(
+                # Application title
+                column(4,
+                       h4("Search Property"),
+                       p("Look up expected Values for your Property")
+                ),
+                
+                # Sidebar with a Address Sections
+                column(4,
+                       h4("Expected Values"),
+                       p("These are predicted values for your property")
+                ),
+                
+                column(4,
+                       h4("Enter Custom Values"),
+                       p("Enter Custom Values if you feel predicted values are inaccurate")
+                )
+                
+              ),
+              #Address Confirmation
+              fluidRow(
+                column(4,
+                       hr(),
+                       selectizeInput('Addr1',
+                                      'Type your address:',
+                                      choices = addresses2$Addr1,
+                                      multiple = FALSE,
+                                      #selectize = TRUE,
+                                      options = list(
+                                        maxOptions = 1,
+                                        placeholder = 'Please type address here',
+                                        onInitialize = I('function() { this.setValue(""); }')
+                                      )
+                       )#,
+                       #submitButton("Look up Info")
+                ),
+                column(4,
+                       hr(),
+                       h4("City, State, Zip Code"),
+                       tableOutput("Address2")
+                ),
+                column(4,
+                       hr(),
+                       h4(),
+                       h4("Confirm Address"),
+                       p("Check to make sure your address looks right!")
+                )
+              ),
+              fluidRow(
+                column(4,
+                       hr(),
+                       h4("Land Value"),
+                       p("This is the value of your land, not including improvements, structures, etc")
+                       
+                ),
+                column(4,
+                       hr(),
+                       h4("Predicted Land Value"),
+                       tableOutput("LandVal1")
+                ),
+                column(4,
+                       hr(),
+                       numericInput("landvalue", "Custom LandValue", value = 0)
+                )
+              ),
+              
+              fluidRow(
+                span(),
+                column(4,
+                       hr(),
+                       h4("Improvements Value"),
+                       p("This is the predicted Improvements Value for your Parcel")
+                ),
+                column(4,
+                       hr(),
+                       h4("Predicted Improvements"),
+                       tableOutput("Improve1")
+                ),
+                column(4,
+                       hr(),
+                       numericInput("LandValue", "InputLV", value = 0, step = NA)
+                )
+              ),
+              fluidRow(
+                column(4,
+                       hr(),
+                       h4("Calculated"),
+                       p("Total Property Value (Sum of Land Value + Improvements")
+                       
+                ),
+                column(4,
+                       hr(),
+                       h4("Predicted Total Value"),
+                       tableOutput("Total1")
+                ),
+                column(4,
+                       hr(),
+                       numericInput("TotVal2", "Custom Total Value", value = 0)
+                )
+              ),
+              fluidRow(
+                column(4,
+                       hr(),
+                       h4("Predicted Fire Ignition"),
+                       p("Probability of Fire Occuring on Land through 2050")
+                       
+                ),
+                column(4,
+                       hr(),
+                       h4("Fire Ignition Probability"),
+                       tableOutput("FireIgnit1")
+                ),
+                column(4,
+                       hr(),
+                       sliderInput("upSlider", "Custom FireIgnit Value", min = 0.01, max = 0.75, value = 0.15, step = 0.01)
+                )
+              ),
+              fluidRow(
+                column(4,
+                       hr(),
+                       h4("Predicted Fire Severity"),
+                       p("Predicted Damage Potential of Fire should Fire Occur without Treatment!")
+                       
+                ),
+                column(4,
+                       hr(),
+                       h4("Fire Severity Probability"),
+                       tableOutput("FireSev1")
+                ),
+                column(4,
+                       hr(),
+                       sliderInput("FireSev2", "Custom FireSev Value", min = 0.1, max = 1, value = 0.4, step = 0.1)
+                )
+              ),
+              fluidRow(
+                column(4,
+                       hr(),
+                       h4("Calculated"),
+                       p("Total Property Value Loss (Total Value * Fire Ignition Prob * Fire Severity)")
+                       
+                ),
+                column(4,
+                       hr(),
+                       h4("Predicted Loss by 2050 if No Treatment is done!"),
+                       tableOutput("Loss1")
+                ),
+                column(4,
+                       hr(),
+                       numericInput("Loss2", "Custom Loss Value", value = 0)
+                )
+              ),
+              fluidRow(
+                column(4,
+                       hr(),
+                       h4("Choose Treatment Intensity"),
+                       p("Treatments are a community action!  If the community bands together to treat more land, then there is a higher likelihood of your property's fire risk decreases")
+                       
+                ),
+                column(4,
+                       hr(),
+                       selectInput("TreatExt",
+                                   "Choose Treatment Extent:",
+                                   choices = c("NT",
+                                               "Min",
+                                               "Mid",
+                                               "Opt"))
+                ),
+                column(4,
+                       hr(),
+                       p("After Selecting treatment, this is your probability for complete loss should fire occur on your parcel"),
+                       tableOutput("NewSev"),
+                       p("After selecting treatment, this is your expected losses through 2050"),
+                       tableOutput("NewDamages"),
+                       p("This is amount of money saved (negative = savings) from avoided fire damages through treatment"),
+                       tableOutput("DiffNT"),
+                       p("This is the 'evenly shared' cost of treatment based on desired treatment extent"),
+                       tableOutput("TreatChoice"),
+                       p("This is the difference between your treatment costs and savings (i dont know whats good maybe negative?)"),
+                       tableOutput("netgain")
+                )
+              ),
+              fluidRow(
+                column(4,
+                       hr(),
                        h4("Treatment Costs"),
                        p("Your Cost of Treating your land!")
                        
@@ -515,11 +799,14 @@ This figure shows the historical fire regimes across the Dinkey Landscape. Users
                        numericInput("TreatmentCost2", "Custom Treatment Cost (Total, or should this be per acre?)", value = 0)
                 )
               )
-
+      )
+              
+              
+              
+              
           )
       )
     )
-  )
 
 
 
