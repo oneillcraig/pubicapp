@@ -8,6 +8,7 @@
 #
 
 
+
 # Final App, dashboard
 
 
@@ -18,12 +19,19 @@ library(sf)
 library(sp)
 library(raster)
 library(tidyverse)
+library(rgdal)
 library(shinycssloaders)
+library(png)
 
-private_parcel <- st_read(dsn = ".",
-                          layer = "Private_Parcels")
 
-addresses <- private_parcel %>% 
+### Cost Calculator Code
+
+# Private Parcel Data
+
+private <- st_read(dsn = ".", 
+                   layer = "Private_Parcels")
+
+addresses <- private %>% 
   select(Planning, Master__35, Master__36, Improvem_1, Land.Value, Area_, Acres, Stand_Id)
 
 
@@ -51,7 +59,8 @@ addresses2 <- addresses1 %>%
   select(Addr1, Addr2, Improvement, LandValue, GA25, PA25, NT_Loss, Opt21_Loss)
 
 
-private <- st_read(dsn = ".", layer = "Private_Parcels")
+
+
 
 private_t <- st_transform(private, "+init=epsg:4326")
 
@@ -110,19 +119,8 @@ SDI260_CFL_Change <- Subset_2000 %>%
 choice <- c("Aspect", "Slope", "Elevation")
 
 
-tiff_stack <- raster::stack("Aspect.tif", "Slope.tif", "Elevation.tif")
+#tiff_stack <- raster::stack("Aspect.tif", "Slope.tif", "Elevation.tif")
 # could convert these to shape files, but tiffs appear smaller so it wouldn't make it faster
-
-
-
-
-
-private <- st_read(dsn = ".", layer = "Private_Parcels")
-
-private_t <- st_transform(private, "+init=epsg:4326")
-
-private_tclass <- private_t %>% 
-  select(Stand_Id)
 
 
 
@@ -133,42 +131,53 @@ private_tcfl <- st_transform(private_cfl, "+init=epsg:4326") %>%
 
 Treatment <- private_tcfl%>% 
   select(CFL_Cat_30) %>% 
-  mutate("Treatment")
+  mutate("Treatment") %>% 
+  mutate(CFL_Cat_30 = CFL_Cat_30 + 1)
+
 colnames(Treatment) <- c("Severity", "Treatment", "geometry")
 
 NoTreatment <- private_tcfl%>% 
   select(NoTreatSev) %>% 
-  mutate("No Treatment")
+  mutate("No Treatment") %>% 
+  mutate(NoTreatSev = NoTreatSev + 1)
+
 colnames(NoTreatment) <- c("Severity", "Treatment", "geometry")
 
 DataT <- rbind(NoTreatment, Treatment)
 
-color <- colorFactor(palette = "Reds", 
-                     domain = c(0,1,2,3,4,5,6), 
+# switched from reds color scheme to divergent RdYlGn, couldn't figure out how to reverse palette, so manually inputed the values
+
+color <- colorFactor(palette = c("#1a9850", "#91cf60", "#d9ef8b", "#fee08b", "#fc8d59", "#d73027"), 
+                     domain = c(0, 1, 2, 3, 4 , 5, 6), 
                      na.color = "transparent")
 
 
-dinkey_boundary <- st_read(dsn = '.', layer = "DinkeyBoundary")
-dinkey_df <- st_transform(dinkey_boundary, "+init=epsg:4326")
 
-
-
+dbHeader <- dashboardHeader(title = "Saving Sierras",
+                        
+                            tags$li(a(href = 'https://www.savingsierras.com/',
+                                      img(src = 'Bren-logo-horizontal.png',
+                                          title = "Company Home", height = "30px"),
+                                      style = "padding-top:10px; padding-bottom:10px;"),
+                                    class = "dropdown"))
 
 # Define UI for application that draws a histogram
-ui <- dashboardPage(
+ui <- dashboardPage(skin = ("green"),
+  
+
   
   
   
+  dbHeader,
   
-  dashboardHeader(title = "Saving Sierras App"),
-  
+
   
   dashboardSidebar(
     
     sidebarMenu(
       
       menuItem("About Page", tabName = "tab_7"),
-      menuItem("Topographical Information", tabName = "tab_2"),
+     # menuItem("Topographical Information", tabName = "tab_2"),
       menuItem("Fire History", tabName = "tab_3"),
       menuItem("Forest Cover", tabName = "tab_4"),
       menuItem("Fire Severity on Public Lands", tabName = "tab_1"),
@@ -189,7 +198,29 @@ ui <- dashboardPage(
               
               fluidRow(
                 
-                box(includeText("about.txt"))
+                
+                box(p("Decades of fire suppression in the southern Sierra Nevada Mountains 
+have led to unnaturally dense forest stands and high levels of combustible fuels on the landscape, 
+leaving the southern Sierra Nevada Mountains vulnerable to high severity  fires that pose health, 
+safety, and economic risks to communities in the Wildland-Urban Interface. Because severe fire poses an immediate threat to 
+individuals and infrastructure to private landowners adjacent to national forest lands, fuel reduction 
+treatments should be regarded as a critical action for implementation directly on these private lands. This web 
+application attempts to motivate private landowners to implement fuel treatments on their lands to reduce the 
+risk of catastrophic fires.
+
+"), width = 6),
+                
+                
+             
+              
+              # These have to be in the www folder in the project 
+              
+                box(img(src='Bren-logo-circular.png', align = "center", height = 100), width = 3),
+              
+              
+                box(img(src= 'Site_Visit.png', align = "center", height = 500), width = 12)
+                
+                
               )
               
               ),
@@ -202,7 +233,7 @@ ui <- dashboardPage(
                 #                  label = "Add Mean Line?",
                 #                  value = FALSE)),
                 tabBox(tabPanel("Summary", verbatimTextOutput("summary")), width = 12),
-               box(includeText("test.txt"), width = 12)
+               box(p("This figure shows the changes in conditional flame length (in feet) across the entire landscape when the entire landscape is treated. Red bars indicate regions where fire severity increased after fuel treatments, in part due to the presence of unburnt slash piles on the landscape. Green bars indicate regions where fire severity decreased after fuel treatments. The table shows the summary statistics of the changes in fire severity."), width = 12)
               )),
       
       tabItem(tabName = "tab_2",
@@ -213,7 +244,7 @@ ui <- dashboardPage(
                                 "Choose Map:", 
                                 choices = choice)),
                 
-                box(includeText("topographical.txt"), width = 12)
+                box(p(("This figure shows topographical information for private lands in the Dinkey Landscape. Users can select between Aspect (in degrees), Slope (in degrees), and elevation (in meters). These are factors that can significantly impact vegetation characteristics as well as fire behavior.")), width = 12)
               )),
 
       tabItem(tabName = "tab_3",
@@ -223,7 +254,7 @@ ui <- dashboardPage(
                     selectInput("regime_class", 
                                 "Choose Regime Level:", 
                                 choices = unique(regime_class$FireRegime))),
-                box(includeText("firehistory.txt"), width = 6)
+                box(p("This figure shows the change in fire regime compared to historical data. Users can select the level of change that they wish the map to show. Much of the Southern Sierra Nevada has had a significant increase in forest density, increasing the risk of high severity, catastrophic fire."), width = 6)
               ),
               
               fluidRow(
@@ -233,7 +264,8 @@ ui <- dashboardPage(
                                 "Choose Level of Change:", 
                                 choices = unique(cond_class$Departure))),
                 
-                box(includeText("departure.txt"), width = 6)
+                box(p("
+This figure shows the historical fire regimes across the Dinkey Landscape. Users can select which fire regime the map will show. Much of the Southern Sierra Nevada was historically dominated by low severity, high frequency fires."), width = 6)
               )
       ),
       
@@ -243,7 +275,7 @@ ui <- dashboardPage(
                 
                 
                 
-                box(includeText("forestcover.txt"), width = 12)
+                box(p("This figure shows the dominant vegetation classes across the Dinkey Landscape, with private lands overlaying the map. Vegetation type can significantly impact fire behavior."), width = 12)
                 
                 
                 
@@ -255,12 +287,13 @@ ui <- dashboardPage(
       tabItem(tabName = "tab_5",
               fluidRow(
                 box(withSpinner(leafletOutput("my_graph5", height = 432))),
+               # box(withSpinner(leafletOutput("my_graph8", height = 432))),
                 box(title = "Private Lands Fire Severity",
                     selectInput("treatment", 
                                 "Choose Treatment Type:", 
                                 choices = unique(DataT$Treatment))),
                 
-                box(includeText("fireprivate.txt"), width = 12)
+                box(p("This figure shows fire severities under a scenario when no fuel treatments occur, and a scenario when 21% of the landscape is treated. Fire severities of 4, 5, and 6 indicate a high severity fire."), width = 12)
               )
       ),
       
@@ -290,7 +323,7 @@ ui <- dashboardPage(
                       value = 2050,
                       sep = "")),
         
-        box(includeText("cba.txt"), width = 12)
+        box(p("These two figures show the results of a cost benefit analysis comparing the value of treating 21% of the landscape compared to a no treatment scenario. The top figure shows the total value of fuel treatments for each stakeholder under two different treatment types and two different climate projections. Users can select which stakeholder they wish the see results for, which treatment type they wish to use, and which climate projection they wish to use."), width = 12)
         )
       
       ),
@@ -502,7 +535,9 @@ server <- function(input, output){
     
     output$summary <- renderPrint({
       x <- SDI260_CFL_Change$CFL_Change             # Define x again
-      summary(x, digits = 3)
+      y <- summary(x, digits = 3)
+      z <- round(y, digits = 2)
+      z
     })
     
     ggplot(SDI260_CFL_Change, aes(SDI260_CFL_Change$CFL_Change)) +
@@ -533,6 +568,9 @@ server <- function(input, output){
   
   output$my_graph2 <- renderLeaflet({
     
+    
+    # TOPOGRAPHICAL INFORMATION
+    
     tiffmap <- subset(tiff_stack, input$class, drop=TRUE)
     
     
@@ -561,6 +599,12 @@ server <- function(input, output){
   })
   
   output$my_graph3 <- renderLeaflet({
+    
+    
+    # FIRE HISTORY
+    
+    
+    
     regime_sub <- regime_class %>%
       filter(FireRegime == input$regime_class)
 
@@ -581,6 +625,15 @@ server <- function(input, output){
                   fillOpacity = 0.3)})
     
   output$my_graph7 <- renderLeaflet({
+    
+    
+    
+    
+    # ALSO FIRE HISTORY
+    
+    
+    
+    
     cond_sub <- cond_class %>%
       filter(Departure == input$cond_class)
     
@@ -601,6 +654,11 @@ server <- function(input, output){
                   fillOpacity = 0.3)})
   
   output$my_graph4 <- renderLeaflet({
+    
+    
+    # FOREST COVER
+    
+    
     leaflet() %>% 
       addTiles() %>% 
       addPolygons(data = dinkey_df,
@@ -624,6 +682,8 @@ server <- function(input, output){
       addLegend(pal = palrainbow, 
                 values = SAFNames,
                 title = "Forest Cover Types") %>%
+      
+  
       addLayersControl(
         baseGroups = c("Vegetation"),
         overlayGroups = c("Dinkey Boundary", "Private Parcels"),
@@ -634,6 +694,36 @@ server <- function(input, output){
     })
   
   output$my_graph5 <- renderLeaflet({
+    
+    
+    # FIRE SEVERITY OF PRIVATE LANDS
+    
+    
+    private_map <- DataT %>%
+      filter(Treatment == input$treatment)
+    
+    leaflet(private_map) %>% 
+      addTiles() %>% 
+      addPolygons(weight = 0.5,
+                  color = "Black",
+                  fillColor = ~color(private_map$Severity),
+                  fillOpacity = .9) %>%
+      addPolygons(data = dinkey_df,
+                  weight = 2.0,
+                  color = "Grey",
+                  fillColor = "Transparent",
+                  opacity = 1.0) %>% 
+      addLegend (pal = color, values = DataT$Severity,
+                 title = "Fire Severity Level",
+                 opacity = 1.0)
+  })
+  
+  output$my_graph8 <- renderLeaflet({
+    
+    
+    # FIRE SEVERITY OF PRIVATE LANDS
+    
+    
     private_map <- DataT %>%
       filter(Treatment == input$treatment)
     
@@ -664,8 +754,11 @@ server <- function(input, output){
       xlab("Discount Rate (%)") + 
       ggtitle("Value of Carbon Sequestration (in $US)") +
       theme(plot.title = element_text(hjust = 0.5)) +
-      scale_y_continuous(expand = c(0,0), limits = (c(0, 15))) +
+      scale_y_continuous(expand = c(0,0), limits = (c(-0.5, 15))) +
+      theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank()) +
       coord_flip() + 
+      geom_hline(yintercept = 0, size = 0.75, colour = "black",
+                 linetype = "dotted") +
       guides(fill = FALSE)
   })
   
@@ -683,6 +776,7 @@ server <- function(input, output){
       theme(plot.title = element_text(hjust = 0.5)) +
       scale_y_continuous(expand = c(0,0), limits = (c(0, 350))) +
       coord_flip() + 
+      theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank()) +
       guides(fill = FALSE)
   })
 
@@ -880,6 +974,8 @@ server <- function(input, output){
   
   output$SavingHT <- renderTable(addrSavingHT(),
                                  colnames = FALSE)
+  
+  
 
 }
   
