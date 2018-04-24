@@ -27,7 +27,7 @@ addresses <- private_parcel %>%
 
 colnames(addresses) <- c("ParcelID", "Addr1", "Addr2", "Improvement", "LandValue", "Area", "Acres", "PublicStand", "geometry")
 
-na.omit(addresses)
+addresses1 <- na.omit(addresses)
 
 addresses <- addresses %>% 
   mutate(Val = Improvement + LandValue)
