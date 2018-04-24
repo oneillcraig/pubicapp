@@ -54,9 +54,9 @@ addresses1 <- na.omit(addresses)
 
 addresses1 <- addresses1[!(addresses1$ParcelID ==1159),]
 
-addresses2 <- addresses1 %>% 
-  st_set_geometry(NULL) %>% 
-  select(Addr1, Addr2, Improvement, LandValue, GA25, PA25, NT_Loss, Opt21_Loss)
+#addresses2 <- addresses1 %>% 
+  #st_set_geometry(NULL) %>% 
+  #select(Addr1, Addr2, Improvement, LandValue, GA25, PA25, NT_Loss, Opt21_Loss)
 
 
 
@@ -202,13 +202,13 @@ ui <- dashboardPage(skin = ("green"),
     sidebarMenu(
       
       menuItem("About Page", tabName = "tab_7"),
-     # menuItem("Topographical Information", tabName = "tab_2"),
+      #menuItem("Topographical Information", tabName = "tab_2"),
       menuItem("Fire History", tabName = "tab_3"),
       menuItem("Forest Cover", tabName = "tab_4"),
       menuItem("Fire Severity on Public Lands", tabName = "tab_1"),
       menuItem("Fire Severity on Private Lands", tabName = "tab_5"),
       menuItem("Cost Benefit Analysis", tabName = "tab_6"),
-      menuItem("Cost Calculator", tabName = "tab_8"),
+      #menuItem("Cost Calculator", tabName = "tab_8"),
       menuItem("Cost Calculator New", tabName = "tab_9")
   
       )
@@ -353,423 +353,11 @@ This figure shows the historical fire regimes across the Dinkey Landscape. Users
         )
       
       ),
-      tabItem(tabName = "tab_8",
-              fluidRow(
-                # Application title
-                column(4,
-                       h4("Search Property"),
-                       p("Look up expected Values for your Property")
-                ),
-                
-                # Sidebar with a Address Sections
-                column(4,
-                       h4("Expected Values"),
-                       p("These are predicted values for your property")
-                ),
-                
-                column(4,
-                       h4("Enter Custom Values"),
-                       p("Enter Custom Values if you feel predicted values are inaccurate")
-                )
-              ),
-              #Address Confirmation
-              fluidRow(
-                column(4,
-                       hr(),
-                       selectizeInput('Addr1',
-                                      'Type your address:',
-                                      choices = addresses2$Addr1,
-                                      multiple = FALSE,
-                                      #selectize = TRUE,
-                                      options = list(
-                                        maxOptions = 1,
-                                        placeholder = 'Please type address here',
-                                        onInitialize = I('function() { this.setValue(""); }')
-                                      )
-                       ),
-                       actionButton("update", "Look up Info", icon("refresh"), class = "btn btn-primary")
-                ),
-                column(4,
-                       hr(),
-                       h4("City, State, Zip Code"),
-                       tableOutput("Address2")
-                ),
-                column(4,
-                       hr(),
-                       h4(),
-                       h4("Confirm Address"),
-                       p("Check to make sure your address looks right!")
-                )
-              ),
-              fluidRow(
-                column(4,
-                       hr(),
-                       h4("Land Value"),
-                       p("This is the value of your land, not including improvements, structures, etc")
-                       
-                ),
-                column(4,
-                       hr(),
-                       h4("Predicted Land Value"),
-                       tableOutput("LandVal1")
-                ),
-                column(4,
-                       hr(),
-                       numericInput("landvalue", "Custom LandValue", value = 0)
-                )
-              ),
-              
-              fluidRow(
-                column(4,
-                       hr(),
-                       h4("Improvements Value"),
-                       p("This is the predicted Improvements Value for your Parcel")
-                ),
-                column(4,
-                       hr(),
-                       h4("Predicted Improvements"),
-                       tableOutput("Improve1")
-                ),
-                column(4,
-                       hr(),
-                       numericInput("LandValue", "InputLV", value = 0, step = NA)
-                )
-              ),
-              fluidRow(
-                column(4,
-                       hr(),
-                       h4("Calculated"),
-                       p("Total Property Value (Sum of Land Value + Improvements")
-                       
-                ),
-                column(4,
-                       hr(),
-                       h4("Predicted Total Value"),
-                       tableOutput("Total1")
-                ),
-                column(4,
-                       hr(),
-                       numericInput("TotVal2", "Custom Total Value", value = 0)
-                )
-              ),
-              fluidRow(
-                column(4,
-                       hr(),
-                       h4("Predicted Fire Ignition"),
-                       p("Probability of Fire Occuring on Land through 2050")
-                       
-                ),
-                column(4,
-                       hr(),
-                       h4("Fire Ignition Probability"),
-                       tableOutput("FireIgnit1")
-                ),
-                column(4,
-                       hr(),
-                       sliderInput("upSlider", "Custom FireIgnit Value", min = 0.01, max = 0.75, value = 0.15, step = 0.01)
-                )
-              ),
-              fluidRow(
-                column(4,
-                       hr(),
-                       h4("Predicted Fire Severity"),
-                       p("Predicted Damage Potential of Fire should Fire Occur without Treatment!")
-                       
-                ),
-                column(4,
-                       hr(),
-                       h4("Fire Severity Probability"),
-                       tableOutput("FireSev1")
-                ),
-                column(4,
-                       hr(),
-                       sliderInput("FireSev2", "Custom FireSev Value", min = 0.1, max = 1, value = 0.4, step = 0.1)
-                )
-              ),
-              fluidRow(
-                column(4,
-                       hr(),
-                       h4("Calculated"),
-                       p("Total Property Value Loss (Total Value * Fire Ignition Prob * Fire Severity)")
-                       
-                ),
-                column(4,
-                       hr(),
-                       h4("Predicted Loss by 2050 if No Treatment is done!"),
-                       tableOutput("Loss1")
-                ),
-                column(4,
-                       hr(),
-                       numericInput("Loss2", "Custom Loss Value", value = 0)
-                )
-              ),
-              fluidRow(
-                column(4,
-                       hr(),
-                       h4("Treatment Costs"),
-                       p("Your Cost of Treating your land!")
-                       
-                ),
-                column(4,
-                       hr(),
-                       p("Estimated Treatment Cost based on Mechanical Thinning Parcel Area"),
-                       tableOutput("TreatmentCost1"),
-                       p("Estimated Treatment Cost based on Handthinning"),
-                       tableOutput("TreatmentcostsHT")
-                ),
-                column(4,
-                       hr(),
-                       numericInput("TreatmentCost2", "Custom Treatment Cost (Total, or should this be per acre?)", value = 0)
-                )
-              ),
-              fluidRow(
-                column(4,
-                       hr(),
-                       h4("Potential Avoided Fire Damage Savings"),
-                       p("The money you potentially save!  Not adjusted for NPV")
-                       
-                ),
-                column(4,
-                       hr(),
-                       p("Estimated based on Mechanical:"),
-                       tableOutput("SavingMech"),
-                       p("Estimated based on Handthinning:"),
-                       tableOutput("SavingHT")
-                ),
-                column(4,
-                       hr(),
-                       numericInput("TreatmentCost2", "Custom Treatment Cost (Total, or should this be per acre?)", value = 0)
-                )
-              )
-
-          ),
+####Cost Calculator###########
       tabItem(tabName = "tab_9",
               fluidRow(
                 br(),
-                h1("Cost Calculator demo")
-              ),
-              fluidRow(
-                # Application title
-                column(4,
-                       h4("Search Property"),
-                       p("Look up expected Values for your Property")
-                ),
-                
-                # Sidebar with a Address Sections
-                column(4,
-                       h4("Expected Values"),
-                       p("These are predicted values for your property")
-                ),
-                
-                column(4,
-                       h4("Enter Custom Values"),
-                       p("Enter Custom Values if you feel predicted values are inaccurate")
-                )
-                
-              ),
-              #Address Confirmation
-              fluidRow(
-                column(4,
-                       hr(),
-                       selectizeInput('Addr1',
-                                      'Type your address:',
-                                      choices = addresses2$Addr1,
-                                      multiple = FALSE,
-                                      #selectize = TRUE,
-                                      options = list(
-                                        maxOptions = 1,
-                                        placeholder = 'Please type address here',
-                                        onInitialize = I('function() { this.setValue(""); }')
-                                      )
-                       )#,
-                       #submitButton("Look up Info")
-                ),
-                column(4,
-                       hr(),
-                       h4("City, State, Zip Code"),
-                       tableOutput("Address2")
-                ),
-                column(4,
-                       hr(),
-                       h4(),
-                       h4("Confirm Address"),
-                       p("Check to make sure your address looks right!")
-                )
-              ),
-              fluidRow(
-                column(4,
-                       hr(),
-                       h4("Land Value"),
-                       p("This is the value of your land, not including improvements, structures, etc")
-                       
-                ),
-                column(4,
-                       hr(),
-                       h4("Predicted Land Value"),
-                       tableOutput("LandVal1")
-                ),
-                column(4,
-                       hr(),
-                       numericInput("landvalue", "Custom LandValue", value = 0)
-                )
-              ),
-              
-              fluidRow(
-                span(),
-                column(4,
-                       hr(),
-                       h4("Improvements Value"),
-                       p("This is the predicted Improvements Value for your Parcel")
-                ),
-                column(4,
-                       hr(),
-                       h4("Predicted Improvements"),
-                       tableOutput("Improve1")
-                ),
-                column(4,
-                       hr(),
-                       numericInput("LandValue", "InputLV", value = 0, step = NA)
-                )
-              ),
-              fluidRow(
-                column(4,
-                       hr(),
-                       h4("Calculated"),
-                       p("Total Property Value (Sum of Land Value + Improvements")
-                       
-                ),
-                column(4,
-                       hr(),
-                       h4("Predicted Total Value"),
-                       tableOutput("Total1")
-                ),
-                column(4,
-                       hr(),
-                       numericInput("TotVal2", "Custom Total Value", value = 0)
-                )
-              ),
-              fluidRow(
-                column(4,
-                       hr(),
-                       h4("Predicted Fire Ignition"),
-                       p("Probability of Fire Occuring on Land through 2050")
-                       
-                ),
-                column(4,
-                       hr(),
-                       h4("Fire Ignition Probability"),
-                       tableOutput("FireIgnit1")
-                ),
-                column(4,
-                       hr(),
-                       sliderInput("upSlider", "Custom FireIgnit Value", min = 0.01, max = 0.75, value = 0.15, step = 0.01)
-                )
-              ),
-              fluidRow(
-                column(4,
-                       hr(),
-                       h4("Predicted Fire Severity"),
-                       p("Predicted Damage Potential of Fire should Fire Occur without Treatment!")
-                       
-                ),
-                column(4,
-                       hr(),
-                       h4("Fire Severity Probability"),
-                       tableOutput("FireSev1")
-                ),
-                column(4,
-                       hr(),
-                       sliderInput("FireSev2", "Custom FireSev Value", min = 0.1, max = 1, value = 0.4, step = 0.1)
-                )
-              ),
-              fluidRow(
-                column(4,
-                       hr(),
-                       h4("Calculated"),
-                       p("Total Property Value Loss (Total Value * Fire Ignition Prob * Fire Severity)")
-                       
-                ),
-                column(4,
-                       hr(),
-                       h4("Predicted Loss by 2050 if No Treatment is done!"),
-                       tableOutput("Loss1")
-                ),
-                column(4,
-                       hr(),
-                       numericInput("Loss2", "Custom Loss Value", value = 0)
-                )
-              ),
-              fluidRow(
-                column(4,
-                       hr(),
-                       h4("Choose Treatment Intensity"),
-                       p("Treatments are a community action!  If the community bands together to treat more land, then there is a higher likelihood of your property's fire risk decreases")
-                       
-                ),
-                column(4,
-                       hr(),
-                       selectInput("TreatExt",
-                                   "Choose Treatment Extent:",
-                                   choices = c("NT",
-                                               "Min",
-                                               "Mid",
-                                               "Opt"))
-                ),
-                column(4,
-                       hr(),
-                       p("After Selecting treatment, this is your probability for complete loss should fire occur on your parcel"),
-                       tableOutput("NewSev"),
-                       p("After selecting treatment, this is your expected losses through 2050"),
-                       tableOutput("NewDamages"),
-                       p("This is amount of money saved (negative = savings) from avoided fire damages through treatment"),
-                       tableOutput("DiffNT"),
-                       p("This is the 'evenly shared' cost of treatment based on desired treatment extent"),
-                       tableOutput("TreatChoice"),
-                       p("This is the difference between your treatment costs and savings (i dont know whats good maybe negative?)"),
-                       tableOutput("netgain")
-                )
-              ),
-              fluidRow(
-                column(4,
-                       hr(),
-                       h4("Treatment Costs"),
-                       p("Your Cost of Treating your land!")
-                       
-                ),
-                column(4,
-                       hr(),
-                       p("Estimated Treatment Cost based on Mechanical Thinning Parcel Area"),
-                       tableOutput("TreatmentCost1"),
-                       p("Estimated Treatment Cost based on Handthinning"),
-                       tableOutput("TreatmentcostsHT")
-                ),
-                column(4,
-                       hr(),
-                       numericInput("TreatmentCost2", "Custom Treatment Cost (Total, or should this be per acre?)", value = 0)
-                )
-              ),
-              fluidRow(
-                column(4,
-                       hr(),
-                       h4("Potential Avoided Fire Damage Savings"),
-                       p("The money you potentially save!  Not adjusted for NPV")
-                       
-                ),
-                column(4,
-                       hr(),
-                       p("Estimated based on Mechanical:"),
-                       tableOutput("SavingMech"),
-                       p("Estimated based on Handthinning:"),
-                       tableOutput("SavingHT")
-                ),
-                column(4,
-                       hr(),
-                       numericInput("TreatmentCost2", "Custom Treatment Cost (Total, or should this be per acre?)", value = 0)
-                )
-              ),
-              fluidRow(
-                br(),
-                h1("Cost Calculator demo")
+                h1("Cost Calculator demo Updated")
               ),
               fluidRow(
                 # Application title
@@ -991,7 +579,7 @@ This figure shows the historical fire regimes across the Dinkey Landscape. Users
                 )
               )
       )
-
+##########CostCalculator End################
       )
     )
   )
@@ -1072,11 +660,13 @@ server <- function(input, output){
     
     
   })
-  
+
+###### FIRE HISTORY#####  
+    
   output$my_graph3 <- renderLeaflet({
     
     
-    # FIRE HISTORY
+
     
     
     
@@ -1098,13 +688,15 @@ server <- function(input, output){
                   color = "black",
                   fillColor = "yellow",
                   fillOpacity = 0.3)})
-    
+
+  
+##### ALSO FIRE HISTORY #####    
   output$my_graph7 <- renderLeaflet({
     
     
     
     
-    # ALSO FIRE HISTORY
+
     
     
     
@@ -1127,13 +719,12 @@ server <- function(input, output){
                   color = "black",
                   fillColor = "yellow",
                   fillOpacity = 0.3)})
+
   
+#### FOREST COVER ######  
   output$my_graph4 <- renderLeaflet({
     
-    
-    # FOREST COVER
-    
-    
+
     leaflet() %>% 
       addTiles() %>% 
       addPolygons(data = dinkey_df,
@@ -1167,13 +758,12 @@ server <- function(input, output){
       
       
     })
-  
+
+##### FIRE SEVERITY OF PRIVATE LANDS#####  
+    
   output$my_graph5 <- renderLeaflet({
     
-    
-    # FIRE SEVERITY OF PRIVATE LANDS
-    
-    
+
     private_map <- DataT %>%
       filter(Treatment == input$treatment)
     
@@ -1192,13 +782,13 @@ server <- function(input, output){
                  title = "Fire Severity Level",
                  opacity = 1.0)
   })
+
   
+#### FIRE SEVERITY OF PRIVATE LANDS######    
   output$my_graph8 <- renderLeaflet({
     
-    
-    # FIRE SEVERITY OF PRIVATE LANDS
-    
-    
+
+
     private_map <- DataT %>%
       filter(Treatment == input$treatment)
     
@@ -1217,7 +807,9 @@ server <- function(input, output){
                  title = "Fire Severity Level",
                  opacity = 1.0)
   })
-  
+
+####Carbon CBA ######  
+    
   output$distPlot <- renderPlot({
     x <- carbon$DifferenceToDate
     Years <- input$Year 
@@ -1257,11 +849,13 @@ server <- function(input, output){
       guides(fill = FALSE)
   })
 
-  addresses2 <- addresses1 %>% 
-    st_set_geometry(NULL) %>% 
-    select(Addr1, Addr2, Improvement, LandValue, GA25, PA25, NT_Loss, Opt21_Loss, Acres)
-  addresses2$LandValue <- as.numeric(levels(addresses2$LandValue))[addresses2$LandValue]
-  addresses2$Improvement <- as.numeric(levels(addresses2$Improvement))[addresses2$Improvement]
+#####Cost Calculator ######  
+  
+#addresses2 <- addresses1 %>% 
+    #st_set_geometry(NULL) %>% 
+    #select(Addr1, Addr2, Improvement, LandValue, GA25, PA25, NT_Loss, Opt21_Loss, Acres)
+  #addresses2$LandValue <- as.numeric(levels(addresses2$LandValue))[addresses2$LandValue]
+  #addresses2$Improvement <- as.numeric(levels(addresses2$Improvement))[addresses2$Improvement]
   
   
   #control <- input$Addr1
@@ -1452,7 +1046,74 @@ server <- function(input, output){
   output$SavingHT <- renderTable(addrSavingHT(),
                                  colnames = FALSE)
   
+  addrNewSev <- reactive({
+    a <- addresses3 %>% 
+      subset(Addr1 == input$Addr1)%>%
+      subset(Treat == input$TreatExt) %>% 
+      select(HVRA) #%>% 
+    #a[,1] <- sapply(a[,1], function(x) paste0("$",x))
+    return(a)
+  })
   
+  output$NewSev <- renderTable(addrNewSev(),
+                               colnames = FALSE)
+  
+  
+  addrNewDamages <- reactive({
+    b <- input$TreatExt
+    a <- addresses3 %>% 
+      subset(Addr1 == input$Addr1)%>% 
+      subset(Treat == input$TreatExt) %>%  #Would need to stack the data by treatment ext
+      select(Improvement, LandValue, GA25, HVRA) %>% 
+      mutate(Tot_NT_Loss = (Improvement + LandValue) * GA25 * HVRA) %>% 
+      select(Tot_NT_Loss)
+    a[,1] <- sapply(a[,1], function(x) paste0("$",x))
+    return(a)
+  })
+  
+  output$NewDamages <- renderTable(addrNewDamages(),
+                                   colnames = FALSE)
+  
+  addrDiff <- reactive({
+    a <- addresses3 %>% 
+      subset(Addr1 == input$Addr1)%>% 
+      subset(Treat == input$TreatExt) %>%  #Would need to stack the data by treatment ext
+      select(Improvement, LandValue, GA25, HVRA, Ntbase) %>% 
+      mutate(Tot_NT_Loss = ((Improvement + LandValue) * GA25 * HVRA) - Ntbase) %>% 
+      select(Tot_NT_Loss)
+    a[,1] <- sapply(a[,1], function(x) paste0("$",x))
+    return(a)
+  })
+  
+  output$DiffNT <- renderTable(addrDiff(),
+                               colnames = FALSE)
+  
+  addrTcost <- reactive({
+    a <- addresses3 %>% 
+      subset(Addr1 == input$Addr1)%>% 
+      subset(Treat == input$TreatExt) %>%  #Would need to stack the data by treatment ext
+      select(TreatmentCost)
+    a[,1] <- sapply(a[,1], function(x) paste0("$",x))
+    return(a)
+  })
+  
+  output$TreatChoice <- renderTable(addrTcost(),
+                                    colnames = FALSE)
+  
+  addrnet <- reactive({
+    a <- addresses3 %>% 
+      subset(Addr1 == input$Addr1)%>% 
+      subset(Treat == input$TreatExt) %>%  
+      select(Improvement, LandValue, GA25, HVRA, Ntbase, TreatmentCost) %>% 
+      mutate(Tot_NT_Loss = (Ntbase - (Improvement + LandValue) * GA25 * HVRA) - TreatmentCost) %>% 
+      select(Tot_NT_Loss)
+    
+    a[,1] <- sapply(a[,1], function(x) paste0("$",x))
+    return(a)
+  })
+  
+  output$netgain <- renderTable(addrnet(),
+                                colnames = FALSE)  
 
 }
   
