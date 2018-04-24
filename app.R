@@ -262,16 +262,16 @@ risk of catastrophic fires.
                box(p("This figure shows the changes in conditional flame length (in feet) across the entire landscape when the entire landscape is treated. Red bars indicate regions where fire severity increased after fuel treatments, in part due to the presence of unburnt slash piles on the landscape. Green bars indicate regions where fire severity decreased after fuel treatments. The table shows the summary statistics of the changes in fire severity."), width = 12)
               )),
       
-      tabItem(tabName = "tab_2",
-              fluidRow(
-                box(withSpinner(leafletOutput("my_graph2", height = 432))),
-                box(title = "Private Lands Maps",
-                    selectInput("class", 
-                                "Choose Map:", 
-                                choices = choice)),
+      #tabItem(tabName = "tab_2",
+              #fluidRow(
+                #box(withSpinner(leafletOutput("my_graph2", height = 432))),
+                #box(title = "Private Lands Maps",
+                #    selectInput("class", 
+                #                "Choose Map:", 
+                #                choices = choice)),
                 
-                box(p(("This figure shows topographical information for private lands in the Dinkey Landscape. Users can select between Aspect (in degrees), Slope (in degrees), and elevation (in meters). These are factors that can significantly impact vegetation characteristics as well as fire behavior.")), width = 12)
-              )),
+                #box(p(("This figure shows topographical information for private lands in the Dinkey Landscape. Users can select between Aspect (in degrees), Slope (in degrees), and elevation (in meters). These are factors that can significantly impact vegetation characteristics as well as fire behavior.")), width = 12)
+              #)),
 
       tabItem(tabName = "tab_3",
               fluidRow(
@@ -360,7 +360,7 @@ This figure shows the historical fire regimes across the Dinkey Landscape. Users
                 h1("Property Owner Fire Risk and Cost Calculator")
               ),
               fluidRow(
-                # Application title
+                
                 column(4,
                        h4("Search Property"),
                        p("Look up expected Values for your Property")
@@ -628,38 +628,38 @@ server <- function(input, output){
   
   
   
-  
-  output$my_graph2 <- renderLeaflet({
+#####Topo Info Begin   #######
+#  output$my_graph2 <- renderLeaflet({
     
     
     # TOPOGRAPHICAL INFORMATION
     
-    tiffmap <- subset(tiff_stack, input$class, drop=TRUE)
+#    tiffmap <- subset(tiff_stack, input$class, drop=TRUE)
     
     
-    pal <- colorNumeric(c("#0C2C84", "#41B6C4", "#FFFFCC"), values(tiffmap),
-                        na.color = "transparent")
+#    pal <- colorNumeric(c("#0C2C84", "#41B6C4", "#FFFFCC"), values(tiffmap),
+#                        na.color = "transparent")
     #leaflet(private_tclass) %>% 
     #addTiles() %>% 
     
     
-    leaflet(private_tclass) %>% 
-      addTiles() %>% 
-      addRasterImage(tiffmap, colors = pal, opacity = 0.8) %>% 
-      addLegend (pal = pal, values = values(tiffmap),
-                 title = input$class) %>% 
-      addPolygons(color = "black",
-                  weight = 0.5, fill = NA) %>%
-      addPolygons(data = dinkey_df,
-                  weight = 1,
-                  color = "black",
-                  fillColor = "transparent")
+#    leaflet(private_tclass) %>% 
+#      addTiles() %>% 
+#      addRasterImage(tiffmap, colors = pal, opacity = 0.8) %>% 
+#      addLegend (pal = pal, values = values(tiffmap),
+#                 title = input$class) %>% 
+#      addPolygons(color = "black",
+#                  weight = 0.5, fill = NA) %>%
+#      addPolygons(data = dinkey_df,
+#                  weight = 1,
+#                  color = "black",
+#                  fillColor = "transparent")
     
     
     
     
     
-  })
+#  })
 
 ###### FIRE HISTORY#####  
     
