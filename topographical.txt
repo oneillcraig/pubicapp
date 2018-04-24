@@ -1,0 +1,1 @@
+This figure shows topographical information for private lands in the Dinkey Landscape. Users can select between Aspect (in degrees), Slope (in degrees), and elevation (in meters). These are factors that can significantly impact vegetation characteristics as well as fire behavior.
