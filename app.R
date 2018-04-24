@@ -178,7 +178,7 @@ color <- colorFactor(palette = c("#1a9850", "#91cf60", "#d9ef8b", "#fee08b", "#f
 
 
 
-dbHeader <- dashboardHeader(title = "Saving Sierras",
+dbHeader <- dashboardHeader(title = "SRCD Fire App",
                         
                             tags$li(a(href = 'https://www.savingsierras.com/',
                                       img(src = 'Bren-logo-horizontal.png',
@@ -357,7 +357,7 @@ This figure shows the historical fire regimes across the Dinkey Landscape. Users
       tabItem(tabName = "tab_9",
               fluidRow(
                 br(),
-                h1("Cost Calculator demo Updated")
+                h1("Property Owner Fire Risk and Cost Calculator")
               ),
               fluidRow(
                 # Application title
