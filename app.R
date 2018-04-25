@@ -184,7 +184,10 @@ dbHeader <- dashboardHeader(title = "SRCD Fire App",
                                       img(src = 'Bren-logo-horizontal.png',
                                           title = "Company Home", height = "30px"),
                                       style = "padding-top:10px; padding-bottom:10px;"),
-                                    class = "dropdown"))
+                                    class = "dropdown"
+                                    ))
+
+
 
 # Define UI for application that draws a histogram
 ui <- dashboardPage(skin = ("green"),
@@ -199,6 +202,7 @@ ui <- dashboardPage(skin = ("green"),
   
   dashboardSidebar(
     
+
     sidebarMenu(
       
       menuItem("About Page", tabName = "tab_7"),
@@ -209,11 +213,17 @@ ui <- dashboardPage(skin = ("green"),
       menuItem("Fire Severity on Private Lands", tabName = "tab_5"),
       menuItem("Cost Benefit Analysis", tabName = "tab_6"),
       #menuItem("Cost Calculator", tabName = "tab_8"),
-      menuItem("Cost Calculator New", tabName = "tab_9")
+      menuItem("Cost Calculator", tabName = "tab_9"),
+      
+      
+     
+      
+      img(src='Bren-logo-circular.png', align = "center", height = 150)
   
       )
       
     ),
+  
   
   
   dashboardBody(
@@ -225,26 +235,39 @@ ui <- dashboardPage(skin = ("green"),
               fluidRow(
                 
                 
-                box(p("Decades of fire suppression in the southern Sierra Nevada Mountains 
-have led to unnaturally dense forest stands and high levels of combustible fuels on the landscape, 
-leaving the southern Sierra Nevada Mountains vulnerable to high severity  fires that pose health, 
-safety, and economic risks to communities in the Wildland-Urban Interface. Because severe fire poses an immediate threat to 
-individuals and infrastructure to private landowners adjacent to national forest lands, fuel reduction 
-treatments should be regarded as a critical action for implementation directly on these private lands. This web 
-application attempts to motivate private landowners to implement fuel treatments on their lands to reduce the 
-risk of catastrophic fires.
+                box(tags$h4("Forests, Fuel, and Fire"), p("Decades of fire 
+suppression in the southern Sierra Nevada Mountains 
+have led to unnaturally dense forest stands and high levels 
+of combustible fuels on the landscape. This, along 
+with severe drought, and bark beetle infestations 
+has left the southern Sierra Nevada Mountains 
+vulnerable to high severity fires that pose health, 
+safety, and economic risks to communities in the Wildland-Urban Interface. 
+Because severe fire poses an immediate threat to 
+individuals and infrastructure adjacent to national 
+forest lands, treatments to reduce 
+fuel loads on the landscape, such as mechanical thinning, 
+should be implemented on private lands. 
+While there are significant upfront costs 
+that restrict the ability of private 
+landowners to implement these treatments, there are opportunities 
+through federal and state agencies,
+such as grants and cost share programs, 
+to reduce these barriers.
 
 "), width = 6),
+                box(tags$h4("Web Application Development"), p("This web application was developed to motivate fuel treatments on private lands in the Southern Sierra Nevada, in order to reduce the risk of catastrophic wildfires. It was developed by masters' students at the Bren School of Environmental Science & Management, at the University of California - Santa Barbara"), width = 6),
+                box(tags$h4("Contact Information"), p("Justin Heyerdahl - jheyerdahl@bren.ucsb.edu"), p("Chris Hughes - chughes@bren.ucsb.edu"), p("Tess Morgridge - tmorgridge@bren.ucsb.edu"), p("Craig O'Neill - coneill@bren.ucsb.edu"), p("Jason White - jwhite@bren.ucsb.edu"), width = 6),
                 
                 
              
               
               # These have to be in the www folder in the project 
               
-                box(img(src='Bren-logo-circular.png', align = "center", height = 100), width = 3),
+                
               
               
-                box(img(src= 'Site_Visit.png', align = "center", height = 500), width = 12)
+                box(img(src= 'Site_Visit.png', align = "center", height = 510), width = 12)
                 
                 
               )
