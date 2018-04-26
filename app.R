@@ -751,10 +751,10 @@ server <- function(input, output){
     leaflet() %>% 
       addTiles() %>% 
       addPolygons(data = dinkey_df,
-                  weight = 1,
+                  weight = 3,
                   color = "black",
                   fillColor = "grey",
-                  fillOpacity = 0.5,
+                  fillOpacity = 0,
                   group = "Dinkey Boundary") %>%
       addPolygons(data = SAF_class,
                   weight = 0.5,
@@ -763,8 +763,8 @@ server <- function(input, output){
                   fillOpacity = 0.5,
                   group = "Vegetation") %>%
       addPolygons(data = private_tclass,
-                  weight = 1,
-                  color = "yellow",
+                  weight = 2,
+                  color = "white",
                   fillColor = "yellow",
                   fillOpacity = 0,
                   group = "Private Parcels") %>%
