@@ -918,7 +918,7 @@ server <- function(input, output){
     a <- addresses2 %>% 
       subset(Addr1 == input$Addr1)%>% 
       select(LandValue)
-    a[,1] <- sapply(a[,1], function(x) paste0("$",x))
+    a[,1] <- sapply(a[,1], function(x) paste0("$",format(round(x,2), nsmall = 2)))
     return(a)
     
     
@@ -933,12 +933,13 @@ server <- function(input, output){
     b <- addresses2 %>% 
       subset(Addr1 == input$Addr1)%>% 
       select(Improvement)
-    b[,1] <- sapply(b[,1], function(x) paste0("$",x))
+    b[,1] <- sapply(b[,1], function(x) paste0("$",format(round(x,2), nsmall = 2)))
     return(b)
   })
   
   output$Improve1 <- renderTable(addrImprove(),
-                                 colnames = FALSE)
+                                 colnames = FALSE,
+                                 digits = 2)
   
   
   #output$LandVal1 <- renderText({
@@ -965,7 +966,7 @@ server <- function(input, output){
       select(Improvement, LandValue) %>% 
       mutate(Total = Improvement + LandValue) %>% 
       select(Total)
-    a[,1] <- sapply(a[,1], function(x) paste0("$",x))
+    a[,1] <- sapply(a[,1], function(x) paste0("$",format(round(x,2), nsmall = 2)))
     return(a)
   })
   
@@ -1021,12 +1022,15 @@ server <- function(input, output){
       select(Improvement, LandValue, GA25, NT_Loss) %>% 
       mutate(Tot_NT_Loss = (Improvement + LandValue) * GA25 * NT_Loss) %>% 
       select(Tot_NT_Loss)
-    a[,1] <- sapply(a[,1], function(x) paste0("$",x))
+    a[,1] <- sapply(a[,1], function(x) paste0("$",format(round(x,2), nsmall = 2)))
     return(a)
   })
   
   output$Loss1 <- renderTable(addrLoss(),
-                              colnames = FALSE)
+                              colnames = FALSE,
+                              digits = 2)
+  
+  
   
   
   addrTreatmentCost1 <- reactive({
@@ -1035,7 +1039,7 @@ server <- function(input, output){
       select(Acres) %>% 
       mutate(TreatmentCost = ((Acres * 2750)*3)) %>% 
       select(TreatmentCost)
-    a[,1] <- sapply(a[,1], function(x) paste0("$",x))
+    a[,1] <- sapply(a[,1], function(x) paste0("$",round(x,2)))
     return(a)
   })
   
@@ -1049,7 +1053,7 @@ server <- function(input, output){
       select(Acres) %>% 
       mutate(TreatmentCost = ((Acres / 0.2)*2025*3)) %>% 
       select(TreatmentCost)
-    a[,1] <- sapply(a[,1], function(x) paste0("$",x))
+    a[,1] <- sapply(a[,1], function(x) paste0("$",format(round(x,2), nsmall = 2)))
     return(a)
   })
   
@@ -1064,7 +1068,7 @@ server <- function(input, output){
       mutate(Tot_Loss = (Improvement + LandValue) * GA25 * NT_Loss) %>% 
       mutate(SavingsMech = Tot_Loss - MechCost) %>% 
       select(SavingsMech)
-    a[,1] <- sapply(a[,1], function(x) paste0("$",x))
+    a[,1] <- sapply(a[,1], function(x) paste0("$",format(round(x,2), nsmall = 2)))
     return(a)
   })
   
@@ -1079,7 +1083,7 @@ server <- function(input, output){
       mutate(Tot_Loss = (Improvement + LandValue) * GA25 * NT_Loss) %>% 
       mutate(SavingsHT = Tot_Loss - HTCost) %>% 
       select(SavingsHT)
-    a[,1] <- sapply(a[,1], function(x) paste0("$",x))
+    a[,1] <- sapply(a[,1], function(x) paste0("$",format(round(x,2), nsmall = 2)))
     return(a)
   })
   
@@ -1091,7 +1095,7 @@ server <- function(input, output){
       subset(Addr1 == input$Addr1)%>%
       subset(Treat == input$TreatExt) %>% 
       select(HVRA) #%>% 
-    #a[,1] <- sapply(a[,1], function(x) paste0("$",x))
+    #a[,1] <- sapply(a[,1], function(x) paste0("$",round(x,2)))
     return(a)
   })
   
@@ -1107,7 +1111,7 @@ server <- function(input, output){
       select(Improvement, LandValue, GA25, HVRA) %>% 
       mutate(Tot_NT_Loss = (Improvement + LandValue) * GA25 * HVRA) %>% 
       select(Tot_NT_Loss)
-    a[,1] <- sapply(a[,1], function(x) paste0("$",x))
+    a[,1] <- sapply(a[,1], function(x) paste0("$",format(round(x,2), nsmall = 2)))
     return(a)
   })
   
@@ -1121,7 +1125,7 @@ server <- function(input, output){
       select(Improvement, LandValue, GA25, HVRA, Ntbase) %>% 
       mutate(Tot_NT_Loss = ((Improvement + LandValue) * GA25 * HVRA) - Ntbase) %>% 
       select(Tot_NT_Loss)
-    a[,1] <- sapply(a[,1], function(x) paste0("$",x))
+    a[,1] <- sapply(a[,1], function(x) paste0("$",format(round(x,2), nsmall = 2)))
     return(a)
   })
   
@@ -1133,7 +1137,7 @@ server <- function(input, output){
       subset(Addr1 == input$Addr1)%>% 
       subset(Treat == input$TreatExt) %>%  #Would need to stack the data by treatment ext
       select(TreatmentCost)
-    a[,1] <- sapply(a[,1], function(x) paste0("$",x))
+    a[,1] <- sapply(a[,1], function(x) paste0("$",format(round(x,2), nsmall = 2)))
     return(a)
   })
   
@@ -1148,7 +1152,7 @@ server <- function(input, output){
       mutate(Tot_NT_Loss = (Ntbase - (Improvement + LandValue) * GA25 * HVRA) - TreatmentCost) %>% 
       select(Tot_NT_Loss)
     
-    a[,1] <- sapply(a[,1], function(x) paste0("$",x))
+    a[,1] <- sapply(a[,1], function(x) paste0("$",format(round(x,2), nsmall = 2)))
     return(a)
   })
   
