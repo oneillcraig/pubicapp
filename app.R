@@ -256,7 +256,7 @@ such as grants and cost share programs,
 to reduce these barriers.
 
 "), width = 6),
-                box(tags$h4("Web Application Development"), p("This web application was developed to motivate fuel treatments on private lands in the Southern Sierra Nevada, in order to reduce the risk of catastrophic wildfires. It was developed by masters' students at the Bren School of Environmental Science & Management, at the University of California - Santa Barbara"), width = 6),
+                box(tags$h4("Web Application Development"), p("This web application was developed to motivate fuel treatments on private lands in the Southern Sierra Nevada, in order to reduce the risk of catastrophic wildfires. It was developed by masters' students at the Bren School of Environmental Science & Management, at the University of California - Santa Barbara."), width = 6),
                 box(tags$h4("Contact Information"), p("Justin Heyerdahl - jheyerdahl@bren.ucsb.edu"), p("Chris Hughes - chughes@bren.ucsb.edu"), p("Tess Morgridge - tmorgridge@bren.ucsb.edu"), p("Craig O'Neill - coneill@bren.ucsb.edu"), p("Jason White - jwhite@bren.ucsb.edu"), width = 6),
                 
                 
@@ -267,7 +267,11 @@ to reduce these barriers.
                 
               
               
-                box(img(src= 'Site_Visit.png', align = "center", height = 510), width = 12)
+                box(img(src= 'Site_Visit.png', align = "left", height = 310), img(src= 'DinkeyActivities.png', height = 320), width = 12),
+                box(p("Historical fire suppression, drought, and bark beetle attacks have resulted 
+                      in significant tree mortality across the Dinkey Landscape, presenting a significant 
+                      risk of catastrophic fire (photo from May 2017). While there has been action to reduce 
+                      this risk on public lands by decreasing tree densities, little has been done on private lands."), width = 12)
                 
                 
               )
@@ -313,8 +317,10 @@ to reduce these barriers.
                                 "Choose Level of Change:", 
                                 choices = unique(cond_class$Departure))),
                 
-                box(p("
-This figure shows the historical fire regimes across the Dinkey Landscape. Users can select which fire regime the map will show. Much of the Southern Sierra Nevada was historically dominated by low severity, high frequency fires."), width = 6)
+                box(p("This figure shows the historical fire regimes across the Dinkey Landscape. 
+                      Users can select which fire regime the map will show. 
+                      Much of the Southern Sierra Nevada was historically 
+                      dominated by low severity, high frequency fires."), width = 6)
               )
       ),
       
@@ -346,6 +352,9 @@ This figure shows the historical fire regimes across the Dinkey Landscape. Users
               )
       ),
       
+      
+      ###  COST BENEFIT ANALYSES
+      
       tabItem(tabName = "tab_6",
       fluidRow(
         
@@ -355,7 +364,12 @@ This figure shows the historical fire regimes across the Dinkey Landscape. Users
         
         box(selectInput("Stakeholder", "Choose Stakeholder:", choices = unique(cba$Stakeholder)),
             selectInput("Treatment_Type", "Choose Treatment Type:", choices = unique(cba$Treatment_Type)),
-            selectInput("Climate_Model2", "Choose Climate Model:", choices = unique(cba$Climate_Model2)), width = 6)),
+            selectInput("Climate_Model2", "Choose Climate Model:", choices = unique(cba$Climate_Model2)), width = 6),
+        
+        box(p("This figure shows the total value of treating 21% of the landscape for each stakeholder under 
+              two different treatment types and two different climate projections. Users can select 
+              which stakeholder they wish the see results for, which treatment type they wish to use, 
+              and which climate projection they wish to use."))),
       
       fluidRow(
         
@@ -372,7 +386,10 @@ This figure shows the historical fire regimes across the Dinkey Landscape. Users
                       value = 2050,
                       sep = "")),
         
-        box(p("These two figures show the results of a cost benefit analysis comparing the value of treating 21% of the landscape compared to a no treatment scenario. The top figure shows the total value of fuel treatments for each stakeholder under two different treatment types and two different climate projections. Users can select which stakeholder they wish the see results for, which treatment type they wish to use, and which climate projection they wish to use."), width = 12)
+        box(p("This figure shows the values of treating 21% of the landscape 
+              for carbon sequestration based on the 2018 market value for carbon 
+              credits in California. Users can select which climate projection 
+              they wish to use, and which year they wish to see values for."), width = 6)
         )
       
       ),
