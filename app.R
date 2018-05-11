@@ -444,33 +444,20 @@ to reduce these barriers.
                        hr(),
                        h4(),
                        h4("Confirm Address"),
-                       p("Check to make sure your address looks right!")
+                       p("Check to make sure your address looks right!/Delete this box or change what's written")
                 )
               ),
               fluidRow(
-                column(4,
-                       hr(),
-                       h4("Land Value"),
-                       p("This is the value of your land, not including improvements, structures, etc")
+                #column(4,
+                #       hr(),
+                #       h4("Land Value"),
+                #       p("This is the value of your land, not including improvements, structures, etc")
                        
-                ),
+                #),
                 column(4,
                        hr(),
                        h4("Predicted Land Value"),
                        tableOutput("LandVal1")
-                ),
-                column(4,
-                       hr(),
-                       numericInput("landvalue", "Custom LandValue", value = 0)
-                )
-              ),
-              
-              fluidRow(
-                span(),
-                column(4,
-                       hr(),
-                       h4("Improvements Value"),
-                       p("This is the predicted Improvements Value for your Parcel")
                 ),
                 column(4,
                        hr(),
@@ -479,59 +466,127 @@ to reduce these barriers.
                 ),
                 column(4,
                        hr(),
-                       numericInput("LandValue", "InputLV", value = 0, step = NA)
-                )
-              ),
-              fluidRow(
-                column(4,
-                       hr(),
-                       h4("Calculated"),
-                       p("Total Property Value (Sum of Land Value + Improvements")
-                       
-                ),
-                column(4,
-                       hr(),
                        h4("Predicted Total Value"),
                        tableOutput("Total1")
-                ),
-                column(4,
-                       hr(),
-                       numericInput("TotVal2", "Custom Total Value", value = 0)
                 )
+                
               ),
               fluidRow(
-                column(4,
-                       hr(),
-                       h4("Predicted Fire Ignition"),
-                       p("Probability of Fire Occuring on Land through 2050")
+                #column(4,
+                #      hr(),
+                #       h4("Predicted Fire Ignition"),
+                #       p("Probability of Fire Occuring on Land through 2050")
                        
-                ),
+                #),
                 column(4,
                        hr(),
-                       h4("Fire Ignition Probability"),
+                       h4("Predicted Fire Ignition Probability"),
                        tableOutput("FireIgnit1")
                 ),
                 column(4,
                        hr(),
-                       sliderInput("upSlider", "Custom FireIgnit Value", min = 0.01, max = 0.75, value = 0.15, step = 0.01)
-                )
-              ),
-              fluidRow(
-                column(4,
-                       hr(),
-                       h4("Predicted Fire Severity"),
-                       p("Predicted Damage Potential of Fire should Fire Occur without Treatment!")
-                       
-                ),
-                column(4,
-                       hr(),
-                       h4("Fire Severity Probability"),
+                       h4("Predicted Fire Severity Probability"),
                        tableOutput("FireSev1")
                 ),
                 column(4,
                        hr(),
-                       sliderInput("FireSev2", "Custom FireSev Value", min = 0.1, max = 1, value = 0.4, step = 0.1)
+                       h4("Predicted Loss by 2050 if No Treatment is done!"),
+                       tableOutput("Loss1")
                 )
+                #column(4,
+                #       hr(),
+                #       sliderInput("upSlider", "Custom FireIgnit Value", min = 0.01, max = 0.75, value = 0.15, step = 0.01)
+                #)
+              #),
+              ),
+              #fluidRow(
+              #  span(),
+                #column(4,
+                #       hr(),
+                #       h4("Improvements Value"),
+                #       p("This is the predicted Improvements Value for your Parcel")
+                #),
+                #,
+                #column(4,
+                #       hr(),
+                #       numericInput("LandValue", "InputLV", value = 0, step = NA)
+              #  )
+              #),
+              #fluidRow(
+              #  column(4,
+              #         hr(),
+              #         h4("Calculated"),
+              #         p("Total Property Value (Sum of Land Value + Improvements")
+              #         
+              #  ),
+              #  
+              #  column(4,
+              #         hr(),
+              #         numericInput("TotVal2", "Custom Total Value", value = 0)
+              #  )
+              #),
+              fluidRow(
+                column(4,
+                       hr(),
+                       h4("Now See How Treatment Affects You!"))
+                
+                
+                
+                
+                
+              ),
+              fluidRow(
+                #column(4,
+                       #hr(),
+                       h5("First, choose your Property Value and Fire Risk Profile"),
+                       p("You can either use our predicted values listed above, or choose your own values!")
+                       #)
+              ),
+              fluidRow(
+                column(4,
+                       hr(),
+                       #h4("Input Custom Total Property Value"),
+                       numericInput("landvalue", "Input Custom Total Property Value", value = 0),
+                       selectInput("TreatExt",
+                                   "Choose Treatment Extent:",
+                                   choices = c("NT",
+                                               "Min",
+                                               "Mid",
+                                               "Opt")),
+                       sliderInput("FireProb2", "Choose your custom Fire Ignition Probability", min = 0.1, max = 1, value = 0.5, step = 0.1),
+                       sliderInput("FireSev2", "Custom FireSev Value", min = 0.1, max = 1, value = 0.4, step = 0.1)
+                ),
+                #column(4,
+                #       hr(),
+
+                
+                #),
+                
+                #column(4,
+                #       hr(),
+                #       h4("Predicted Fire Severity"),
+                #       p("Predicted Damage Potential of Fire should Fire Occur without Treatment!")
+                #       
+                #),
+                
+                column(4,
+                       hr(),
+                       #sliderInput("FireSev2", "Custom FireSev Value222", min = 0.1, max = 1, value = 0.4, step = 0.1),
+                       p("After Selecting treatment, this is your probability for complete loss should fire occur on your parcel"),
+                       tableOutput("NewSev"),
+                       p("This is the 'evenly shared' cost of treatment based on desired treatment extent"),
+                       tableOutput("TreatChoice"),
+                       p("After selecting treatment, this is your expected losses through 2050"),
+                       tableOutput("NewDamages")
+                       
+                ),
+                column(4,
+                       hr(),
+                       p("This is amount of money saved (negative = savings) from avoided fire damages through treatment"),
+                       tableOutput("DiffNT"),
+                       p("This is the difference between your treatment costs and savings (i dont know whats good maybe negative?)"),
+                       tableOutput("netgain")
+                       )
               ),
               fluidRow(
                 column(4,
@@ -540,11 +595,7 @@ to reduce these barriers.
                        p("Total Property Value Loss (Total Value * Fire Ignition Prob * Fire Severity)")
                        
                 ),
-                column(4,
-                       hr(),
-                       h4("Predicted Loss by 2050 if No Treatment is done!"),
-                       tableOutput("Loss1")
-                ),
+                
                 column(4,
                        hr(),
                        numericInput("Loss2", "Custom Loss Value", value = 0)
@@ -567,17 +618,17 @@ to reduce these barriers.
                                                "Opt"))
                 ),
                 column(4,
-                       hr(),
-                       p("After Selecting treatment, this is your probability for complete loss should fire occur on your parcel"),
-                       tableOutput("NewSev"),
-                       p("After selecting treatment, this is your expected losses through 2050"),
-                       tableOutput("NewDamages"),
-                       p("This is amount of money saved (negative = savings) from avoided fire damages through treatment"),
-                       tableOutput("DiffNT"),
-                       p("This is the 'evenly shared' cost of treatment based on desired treatment extent"),
-                       tableOutput("TreatChoice"),
-                       p("This is the difference between your treatment costs and savings (i dont know whats good maybe negative?)"),
-                       tableOutput("netgain")
+                       hr()#,
+                       #p("After Selecting treatment, this is your probability for complete loss should fire occur on your parcel"),
+                       #tableOutput("NewSev"),
+                       #p("After selecting treatment, this is your expected losses through 2050"),
+                       #tableOutput("NewDamages"),
+                       #p("This is amount of money saved (negative = savings) from avoided fire damages through treatment"),
+                       #tableOutput("DiffNT"),
+                       #p("This is the 'evenly shared' cost of treatment based on desired treatment extent"),
+                       #tableOutput("TreatChoice"),
+                       #p("This is the difference between your treatment costs and savings (i dont know whats good maybe negative?)"),
+                       #tableOutput("netgain")
                 )
               ),
               fluidRow(
@@ -1009,7 +1060,7 @@ server <- function(input, output){
   addrHVRA <- reactive({
     a <- addresses2 %>% 
       subset(Addr1 == input$Addr1)%>% 
-      select(NT_Loss) 
+      select(NT_HVRA) 
     return(a)
   })
   
