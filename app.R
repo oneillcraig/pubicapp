@@ -409,25 +409,26 @@ to reduce these barriers.
               fluidRow(
                 
                 column(4,
-                       h4("Search Property"),
-                       p("Look up expected Values for your Property")
+                       h4("1.  Search Property"),
+                       p("First, look up the expected Values for your Property")
                 ),
                 
                 # Sidebar with a Address Sections
                 column(4,
-                       h4("Expected Values"),
-                       p("These are predicted values for your property")
+                       h4("2.  Expected Values"),
+                       p("Review your predicted values for your property")
                 ),
                 
                 column(4,
-                       h4("Enter Custom Values"),
-                       p("Enter Custom Values if you feel predicted values are inaccurate")
+                       h4("3.  Enter Custom Values"),
+                       p("if you feel these values are not representative of your property, you will be able to input custom values at the bottom of this calculator.  None of the data used for this calculator is saved, stored, or shared with anyone.")
                 )
                 
               ),
               #Address Confirmation
               fluidRow(
                 column(4,
+                       #style = "background-color:#dfdedc",
                        hr(),
                        selectizeInput('Addr1',
                                       'Type your address:',
@@ -443,15 +444,17 @@ to reduce these barriers.
                        #submitButton("Look up Info")
                 ),
                 column(4,
+                       #style = "background-color:#dfdedc",
                        hr(),
                        h4("City, State, Zip Code"),
                        tableOutput("Address2")
                 ),
                 column(4,
+                       #style = "background-color:#dfdedc",
                        hr(),
                        h4(),
                        h4("Confirm Address"),
-                       p("Check to make sure your address looks right!/Delete this box or change what's written")
+                       p("")
                 )
               ),
               fluidRow(
@@ -462,16 +465,21 @@ to reduce these barriers.
                        
                 #),
                 column(4,
+                       #style = "background-color:#dfdedc",
                        hr(),
                        h4("Predicted Land Value"),
-                       tableOutput("LandVal1")
+                       tableOutput("LandVal1")#,
+                       #p("According to the Fresno County Board of Assesors, this is the land value of your property")
                 ),
                 column(4,
+                       #style = "background-color:#dfdedc",
                        hr(),
                        h4("Predicted Improvements"),
-                       tableOutput("Improve1")
+                       tableOutput("Improve1")#,
+                       #p("According to the Fresno County Board of Assesors, this is the value of any improvements or structures on your property")
                 ),
                 column(4,
+                       #style = "background-color:#dfdedc",
                        hr(),
                        h4("Predicted Total Value"),
                        tableOutput("Total1")
