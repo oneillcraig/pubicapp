@@ -166,11 +166,11 @@ addresses3$TreatmentCost <- as.numeric(addresses3$TreatmentCost)
 addresses3$Ntbase <- as.numeric(addresses3$Ntbase)
 
 addressesCust <- read_csv("addressesCust.csv")
-addresses3$LandValue <- as.numeric(addresses3$LandValue)
-addresses3$Improvement <- as.numeric(addresses3$Improvement)
-addresses3$HVRA <- as.numeric(addresses3$HVRA)
-addresses3$TreatmentCost <- as.numeric(addresses3$TreatmentCost)
-addresses3$Ntbase <- as.numeric(addresses3$Ntbase)
+addressesCust$LandValue <- as.numeric(addressesCust$LandValue)
+addressesCust$Improvement <- as.numeric(addressesCust$Improvement)
+addressesCust$HVRA <- as.numeric(addressesCust$HVRA)
+addressesCust$TreatmentCost <- as.numeric(addressesCust$TreatmentCost)
+addressesCust$Ntbase <- as.numeric(addressesCust$Ntbase)
 
 ##########
 #End Cost Calculator INputs
@@ -560,8 +560,8 @@ to reduce these barriers.
                                                "Min",
                                                "Mid",
                                                "Opt")),
-                       sliderInput("FireProb2", "Choose your custom Fire Ignition Probability", min = 0.1, max = 1, value = 0.5, step = 0.1),
-                       sliderInput("FireSev2", "Custom FireSev Value", min = 0.1, max = 1, value = 0.4, step = 0.1)
+                       sliderInput("FireProb2", "Choose your custom Fire Ignition Probability", min = 0.1, max = 1, value = 0.5, step = 0.1)#,
+                       #sliderInput("FireSev2", "Custom FireSev Value", min = 0.1, max = 1, value = 0.4, step = 0.1)
                 ),
                 #column(4,
                 #       hr(),
@@ -1198,9 +1198,10 @@ server <- function(input, output){
       subset(Treat == input$TreatExt) %>% 
       select(HVRA)
     b <- b[1,]
+    b <- as.numeric(b)
     ab <- as.data.frame(a*b)
-    ab[,1] <- sapply(ab[,1], function(x) paste0("$",format(round(x,2), nsmall = 2)))
-    return(a)
+    ab <- sapply(ab, function(x) paste0("$",format(round(x,2), nsmall = 2)))
+    return(ab)
   })
   
   output$DiffNTa <- renderTable(addrDiffa(),
