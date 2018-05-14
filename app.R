@@ -165,6 +165,13 @@ addresses3$HVRA <- as.numeric(addresses3$HVRA)
 addresses3$TreatmentCost <- as.numeric(addresses3$TreatmentCost)
 addresses3$Ntbase <- as.numeric(addresses3$Ntbase)
 
+addressesCust <- read_csv("addressesCust.csv")
+addresses3$LandValue <- as.numeric(addresses3$LandValue)
+addresses3$Improvement <- as.numeric(addresses3$Improvement)
+addresses3$HVRA <- as.numeric(addresses3$HVRA)
+addresses3$TreatmentCost <- as.numeric(addresses3$TreatmentCost)
+addresses3$Ntbase <- as.numeric(addresses3$Ntbase)
+
 ##########
 #End Cost Calculator INputs
 ##########
@@ -577,7 +584,7 @@ to reduce these barriers.
                        p("This is the 'evenly shared' cost of treatment based on desired treatment extent"),
                        tableOutput("TreatChoice"),
                        p("After selecting treatment, this is your expected losses through 2050"),
-                       tableOutput("NewDamages")
+                       tableOutput("DiffNTa")
                        
                 ),
                 column(4,
@@ -587,39 +594,39 @@ to reduce these barriers.
                        p("This is the difference between your treatment costs and savings (i dont know whats good maybe negative?)"),
                        tableOutput("netgain")
                        )
-              ),
-              fluidRow(
-                column(4,
-                       hr(),
-                       h4("Calculated"),
-                       p("Total Property Value Loss (Total Value * Fire Ignition Prob * Fire Severity)")
-                       
-                ),
-                
-                column(4,
-                       hr(),
-                       numericInput("Loss2", "Custom Loss Value", value = 0)
-                )
-              ),
-              fluidRow(
-                column(4,
-                       hr(),
-                       h4("Choose Treatment Intensity"),
-                       p("Treatments are a community action!  If the community bands together to treat more land, then there is a higher likelihood of your property's fire risk decreases")
-                       
-                ),
-                column(4,
-                       hr(),
-                       selectInput("TreatExt",
-                                   "Choose Treatment Extent:",
-                                   choices = c("NT",
-                                               "Min",
-                                               "Mid",
-                                               "Opt"))
-                ),
-                column(4,
-                       hr()#,
-                       #p("After Selecting treatment, this is your probability for complete loss should fire occur on your parcel"),
+              )#,
+              #fluidRow(
+              #  column(4,
+              #         hr(),
+              #         h4("Calculated"),
+              #         p("Total Property Value Loss (Total Value * Fire Ignition Prob * Fire Severity)")
+              #         
+              #  ),
+              #  
+              #  column(4,
+              #         hr(),
+              #         numericInput("Loss2", "Custom Loss Value", value = 0)
+              #  )
+              #),
+              #fluidRow(
+              #  column(4,
+              #         hr(),
+              #         h4("Choose Treatment Intensity"),
+              #         p("Treatments are a community action!  If the community bands together to treat more land, then there is a higher likelihood of your property's fire risk decreases")
+              #         
+              #  ),
+              #  column(4,
+              #         hr(),
+              #         selectInput("TreatExt",
+              #                     "Choose Treatment Extent:",
+              #                     choices = c("NT",
+              #                                 "Min",
+              #                                 "Mid",
+              #                                 "Opt"))
+              #  ),
+              #  column(4,
+              #         hr()#,
+              #         #p("After Selecting treatment, this is your probability for complete loss should fire occur on your parcel"),
                        #tableOutput("NewSev"),
                        #p("After selecting treatment, this is your expected losses through 2050"),
                        #tableOutput("NewDamages"),
@@ -629,52 +636,52 @@ to reduce these barriers.
                        #tableOutput("TreatChoice"),
                        #p("This is the difference between your treatment costs and savings (i dont know whats good maybe negative?)"),
                        #tableOutput("netgain")
-                )
-              ),
-              fluidRow(
-                column(4,
-                       hr(),
-                       h4("Treatment Costs"),
-                       p("Your Cost of Treating your land!")
-                       
-                ),
-                column(4,
-                       hr(),
-                       p("Estimated Treatment Cost based on Mechanical Thinning Parcel Area"),
-                       tableOutput("TreatmentCost1"),
-                       p("Estimated Treatment Cost based on Handthinning"),
-                       tableOutput("TreatmentcostsHT")
-                ),
-                column(4,
-                       hr(),
-                       numericInput("TreatmentCost2", "Custom Treatment Cost (Total, or should this be per acre?)", value = 0)
-                )
-              ),
-              fluidRow(
-                column(4,
-                       hr(),
-                       h4("Potential Avoided Fire Damage Savings"),
-                       p("The money you potentially save!  Not adjusted for NPV")
-                       
-                ),
-                column(4,
-                       hr(),
-                       p("Estimated based on Mechanical:"),
-                       tableOutput("SavingMech"),
-                       p("Estimated based on Handthinning:"),
-                       tableOutput("SavingHT")
-                ),
-                column(4,
-                       hr(),
-                       numericInput("TreatmentCost2", "Custom Treatment Cost (Total, or should this be per acre?)", value = 0)
-                )
-              )
-      )
+             #   )
+            #  ),
+             # fluidRow(
+            #    column(4,
+            #           hr(),
+            #           h4("Treatment Costs"),
+            #           p("Your Cost of Treating your land!")
+            #           
+            #    ),
+            ##    column(4,
+            #           hr(),
+            #           p("Estimated Treatment Cost based on Mechanical Thinning Parcel Area"),
+            #           tableOutput("TreatmentCost1"),
+            #           p("Estimated Treatment Cost based on Handthinning"),
+            #           tableOutput("TreatmentcostsHT")
+            #    ),
+            #    column(4,
+            #           hr(),
+            #           numericInput("TreatmentCost2", "Custom Treatment Cost (Total, or should this be per acre?)", value = 0)
+         #       )
+        #      ),
+         #     fluidRow(
+        #        column(4,
+        #               hr(),
+        #               h4("Potential Avoided Fire Damage Savings"),
+        #               p("The money you potentially save!  Not adjusted for NPV")
+        #               
+        #        ),
+        #        column(4,
+        #               hr(),
+        #               p("Estimated based on Mechanical:"),
+        #               tableOutput("SavingMech"),
+        #               p("Estimated based on Handthinning:"),
+        #               tableOutput("SavingHT")
+        #        ),
+        #        column(4,
+        #               hr(),
+        #               numericInput("TreatmentCost2", "Custom Treatment Cost (Total, or should this be per acre?)", value = 0)
+        #        )
+        #      )
+      #)
 ##########CostCalculator End################
       )
     )
   )
-
+)
 
 
     
@@ -1181,6 +1188,22 @@ server <- function(input, output){
   })
   
   output$DiffNT <- renderTable(addrDiff(),
+                               colnames = FALSE)
+  
+  addrDiffa <- reactive({
+    a <- input$landvalue * input$FireProb2 #* input$FireSev2
+    #a <- as.data.frame(a)
+    b <- addressesCust %>% 
+      subset(Addr1 == input$Addr1) %>% 
+      subset(Treat == input$TreatExt) %>% 
+      select(HVRA)
+    b <- b[1,]
+    ab <- as.data.frame(a*b)
+    ab[,1] <- sapply(ab[,1], function(x) paste0("$",format(round(x,2), nsmall = 2)))
+    return(a)
+  })
+  
+  output$DiffNTa <- renderTable(addrDiffa(),
                                colnames = FALSE)
   
   addrTcost <- reactive({

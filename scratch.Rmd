@@ -1,0 +1,35 @@
+---
+title: "Untitled"
+author: "Craig"
+date: "May 11, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r}
+addressesCust <- read.csv("addressesCust.csv")
+
+View(addressesCust)
+
+b <- addressesCust %>% 
+  subset(Addr1 == "30500 WATTS VALLEY RD") %>% 
+  subset(Treat == "Min") %>% 
+  select(HVRA)
+str(b)
+View(b)
+
+b <- b[1,]
+
+b <- as.vector(b)
+
+a <- 10
+
+ab <- a*b
+str(ab)
+View(ab)
+```
+
