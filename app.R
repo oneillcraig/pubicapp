@@ -168,11 +168,11 @@ addresses3$TreatmentCost <- as.numeric(addresses3$TreatmentCost)
 addresses3$Ntbase <- as.numeric(addresses3$Ntbase)
 
 addressesCust <- read_csv("addressesCust.csv")
-addresses3$LandValue <- as.numeric(addresses3$LandValue)
-addresses3$Improvement <- as.numeric(addresses3$Improvement)
-addresses3$HVRA <- as.numeric(addresses3$HVRA)
-addresses3$TreatmentCost <- as.numeric(addresses3$TreatmentCost)
-addresses3$Ntbase <- as.numeric(addresses3$Ntbase)
+addressesCust$LandValue <- as.numeric(addressesCust$LandValue)
+addressesCust$Improvement <- as.numeric(addressesCust$Improvement)
+addressesCust$HVRA <- as.numeric(addressesCust$HVRA)
+addressesCust$TreatmentCost <- as.numeric(addressesCust$TreatmentCost)
+addressesCust$Ntbase <- as.numeric(addressesCust$Ntbase)
 
 ##########
 #End Cost Calculator INputs
@@ -408,25 +408,26 @@ to reduce these barriers.
               fluidRow(
                 
                 column(4,
-                       h4("Search Property"),
-                       p("Look up expected Values for your Property")
+                       h4("1.  Search Property"),
+                       p("First, look up the expected Values for your Property")
                 ),
                 
                 # Sidebar with a Address Sections
                 column(4,
-                       h4("Expected Values"),
-                       p("These are predicted values for your property")
+                       h4("2.  Expected Values"),
+                       p("Review your predicted values for your property")
                 ),
                 
                 column(4,
-                       h4("Enter Custom Values"),
-                       p("Enter Custom Values if you feel predicted values are inaccurate")
+                       h4("3.  Enter Custom Values"),
+                       p("if you feel these values are not representative of your property, you will be able to input custom values at the bottom of this calculator.  None of the data used for this calculator is saved, stored, or shared with anyone.")
                 )
                 
               ),
               #Address Confirmation
               fluidRow(
                 column(4,
+                       #style = "background-color:#dfdedc",
                        hr(),
                        selectizeInput('Addr1',
                                       'Type your address:',
@@ -442,15 +443,17 @@ to reduce these barriers.
                        #submitButton("Look up Info")
                 ),
                 column(4,
+                       #style = "background-color:#dfdedc",
                        hr(),
                        h4("City, State, Zip Code"),
                        tableOutput("Address2")
                 ),
                 column(4,
+                       #style = "background-color:#dfdedc",
                        hr(),
                        h4(),
                        h4("Confirm Address"),
-                       p("Check to make sure your address looks right!/Delete this box or change what's written")
+                       p("")
                 )
               ),
               fluidRow(
@@ -461,16 +464,21 @@ to reduce these barriers.
                        
                 #),
                 column(4,
+                       #style = "background-color:#dfdedc",
                        hr(),
                        h4("Predicted Land Value"),
-                       tableOutput("LandVal1")
+                       tableOutput("LandVal1")#,
+                       #p("According to the Fresno County Board of Assesors, this is the land value of your property")
                 ),
                 column(4,
+                       #style = "background-color:#dfdedc",
                        hr(),
                        h4("Predicted Improvements"),
-                       tableOutput("Improve1")
+                       tableOutput("Improve1")#,
+                       #p("According to the Fresno County Board of Assesors, this is the value of any improvements or structures on your property")
                 ),
                 column(4,
+                       #style = "background-color:#dfdedc",
                        hr(),
                        h4("Predicted Total Value"),
                        tableOutput("Total1")
@@ -487,16 +495,19 @@ to reduce these barriers.
                 column(4,
                        hr(),
                        h4("Predicted Fire Ignition Probability"),
+                       p("This is the probability that fire will occur on your land between 2018 and 2050"),
                        tableOutput("FireIgnit1")
                 ),
                 column(4,
                        hr(),
                        h4("Predicted Fire Severity Probability"),
+                       p("Modeled fire severity predicts to destructive potential of a fire should it occur on your land"),
                        tableOutput("FireSev1")
                 ),
                 column(4,
                        hr(),
-                       h4("Predicted Loss by 2050 if No Treatment is done!"),
+                       h4("Predicted Loss in Value"),
+                       p("If no treatment is done, this is your predicted loss in total property value due to fire through the year 2050"),
                        tableOutput("Loss1")
                 )
                 #column(4,
@@ -504,6 +515,28 @@ to reduce these barriers.
                 #       sliderInput("upSlider", "Custom FireIgnit Value", min = 0.01, max = 0.75, value = 0.15, step = 0.01)
                 #)
               #),
+              ),
+              fluidRow(
+                column(4,
+                       style = "background-color:#fe9e00",
+                       hr(),
+                       h5()
+                ),
+                column(4,
+                       style = "background-color:#fe9e00",
+                       hr(),
+                       h5()
+                ),
+                column(4,
+                       style = "background-color:#fe9e00",
+                       hr(),
+                       h5()
+                )
+                #column(4,
+                #       hr(),
+                #       sliderInput("upSlider", "Custom FireIgnit Value", min = 0.01, max = 0.75, value = 0.15, step = 0.01)
+                #)
+                #),
               ),
               #fluidRow(
               #  span(),
@@ -532,7 +565,7 @@ to reduce these barriers.
               #  )
               #),
               fluidRow(
-                column(4,
+                column(12,
                        hr(),
                        h4("Now See How Treatment Affects You!"))
                 
@@ -542,11 +575,11 @@ to reduce these barriers.
                 
               ),
               fluidRow(
-                #column(4,
+                column(12,
                        #hr(),
                        h5("First, choose your Property Value and Fire Risk Profile"),
                        p("You can either use our predicted values listed above, or choose your own values!")
-                       #)
+                       )
               ),
               fluidRow(
                 column(4,
@@ -559,8 +592,8 @@ to reduce these barriers.
                                                "Min",
                                                "Mid",
                                                "Opt")),
-                       sliderInput("FireProb2", "Choose your custom Fire Ignition Probability", min = 0.1, max = 1, value = 0.5, step = 0.1),
-                       sliderInput("FireSev2", "Custom FireSev Value", min = 0.1, max = 1, value = 0.4, step = 0.1)
+                       sliderInput("FireProb2", "Choose your custom Fire Ignition Probability", min = 0.1, max = 1, value = 0.5, step = 0.1)#,
+                       #sliderInput("FireSev2", "Custom FireSev Value", min = 0.1, max = 1, value = 0.4, step = 0.1)
                 ),
                 #column(4,
                 #       hr(),
@@ -577,20 +610,24 @@ to reduce these barriers.
                 
                 column(4,
                        hr(),
-                       #sliderInput("FireSev2", "Custom FireSev Value222", min = 0.1, max = 1, value = 0.4, step = 0.1),
-                       p("After Selecting treatment, this is your probability for complete loss should fire occur on your parcel"),
+                       h4("Property Fire Severity"),
+                       p("This is value refers to the damage potential of a fire on your property, utilizing different treatment intensities on a community level can affect this value"),
                        tableOutput("NewSev"),
-                       p("This is the 'evenly shared' cost of treatment based on desired treatment extent"),
+                       h4("Treatment Costs"),
+                       p("This is the 'evenly shared' cost of treatment based on desired community level of treatment "),
                        tableOutput("TreatChoice"),
+                       h4("Post-treatment Expected Financial Losses"),
                        p("After selecting treatment, this is your expected losses through 2050"),
                        tableOutput("DiffNTa")
                        
                 ),
                 column(4,
                        hr(),
-                       p("This is amount of money saved (negative = savings) from avoided fire damages through treatment"),
+                       h4("Avoided Fire Damages"),
+                       p("This is amount of money saved from avoided fire damages due to treatment"),
                        tableOutput("DiffNT"),
-                       p("This is the difference between your treatment costs and savings (i dont know whats good maybe negative?)"),
+                       h4("Net Benefits of Treatment"),
+                       p("This is the difference between your treatment costs and savings due to avoided fire damage"),
                        tableOutput("netgain")
                        )
               )#,
@@ -1231,9 +1268,10 @@ server <- function(input, output){
       subset(Treat == input$TreatExt) %>% 
       select(HVRA)
     b <- b[1,]
+    b <- as.numeric(b)
     ab <- as.data.frame(a*b)
-    ab[,1] <- sapply(ab[,1], function(x) paste0("$",format(round(x,2), nsmall = 2)))
-    return(a)
+    ab <- sapply(ab, function(x) paste0("$",format(round(x,2), nsmall = 2)))
+    return(ab)
   })
   
   output$DiffNTa <- renderTable(addrDiffa(),

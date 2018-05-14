@@ -11,6 +11,11 @@ knitr::opts_chunk$set(echo = TRUE)
 
 
 ```{r}
+library(tidyverse)
+```
+
+
+```{r}
 addressesCust <- read.csv("addressesCust.csv")
 
 View(addressesCust)
@@ -25,11 +30,39 @@ View(b)
 b <- b[1,]
 
 b <- as.vector(b)
+b <- as.numeric(b)
+str(b)
 
 a <- 10
 
 ab <- a*b
+ab <- as.data.frame(ab)
 str(ab)
 View(ab)
+
+ab <- sapply(ab, function(x) paste0("$",format(round(x,2), nsmall = 2)))
+    return(a)
+
+
+ab[,1] <- sapply(ab[,1], function(x) paste0("$",format(round(x,2), nsmall = 2)))
+    return(a)
+```
+
+##Address Fixing
+```{r}
+
+addfix <- read.csv("fixthisaddr.csv")
+
+addfix2 <- addfix %>% 
+  select(ParcelID, Treat, Addr1, Addr2, Improvement, LandValue, Acres, NT_Loss, Opt21_Loss, Mean_NT, Min, Med, Opt, NT_Cat, Min_Cat, Med_Cat, Opt_Cat, HVRA, TreatmentCost, Ntbase)
+
+GA25seq <- rep(c(rep(0.1,4), rep(0.2, 4), rep(0.3,4), rep(0.4,4), rep(0.5,4), rep(0.6, 4), rep(0.7, 4), rep(0.8, 4), rep(0.9, 4), rep(1, 4)), )
+
+GASeq <- c(rep(0.1, 1484), rep(0.2, 1484), rep(0.3, 1484), rep(0.4, 1484), rep(0.5, 1484), rep(0.6, 1484), rep(0.7, 1484), rep(0.8, 1484), rep(0.9, 1484), rep(1, 1484))
+
+
+write.csv(GASeq, file="GASeq.csv")           
+
+NewAddFix <- data.frame(row.names = c("ParcelID", "Treat", "Addr1", "Addr2", "Improvement", "LandValue", 'Acres', "NT_Loss", "Opt21_Loss", "Mean_NT", "Min", "Med", "Opt", "NT_Cat", "Min_Cat", "Med_Cat", "Opt_Cat", "HVRA", "TreatmentCost", "Ntbase") )
 ```
 
