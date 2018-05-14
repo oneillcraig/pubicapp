@@ -488,16 +488,19 @@ to reduce these barriers.
                 column(4,
                        hr(),
                        h4("Predicted Fire Ignition Probability"),
+                       p("This is the probability that fire will occur on your land between 2018 and 2050"),
                        tableOutput("FireIgnit1")
                 ),
                 column(4,
                        hr(),
                        h4("Predicted Fire Severity Probability"),
+                       p("Modeled fire severity predicts to destructive potential of a fire should it occur on your land"),
                        tableOutput("FireSev1")
                 ),
                 column(4,
                        hr(),
-                       h4("Predicted Loss by 2050 if No Treatment is done!"),
+                       h4("Predicted Loss in Value"),
+                       p("If no treatment is done, this is your predicted loss in total property value due to fire through the year 2050"),
                        tableOutput("Loss1")
                 )
                 #column(4,
@@ -505,6 +508,28 @@ to reduce these barriers.
                 #       sliderInput("upSlider", "Custom FireIgnit Value", min = 0.01, max = 0.75, value = 0.15, step = 0.01)
                 #)
               #),
+              ),
+              fluidRow(
+                column(4,
+                       style = "background-color:#fe9e00",
+                       hr(),
+                       h5()
+                ),
+                column(4,
+                       style = "background-color:#fe9e00",
+                       hr(),
+                       h5()
+                ),
+                column(4,
+                       style = "background-color:#fe9e00",
+                       hr(),
+                       h5()
+                )
+                #column(4,
+                #       hr(),
+                #       sliderInput("upSlider", "Custom FireIgnit Value", min = 0.01, max = 0.75, value = 0.15, step = 0.01)
+                #)
+                #),
               ),
               #fluidRow(
               #  span(),
@@ -533,7 +558,7 @@ to reduce these barriers.
               #  )
               #),
               fluidRow(
-                column(4,
+                column(12,
                        hr(),
                        h4("Now See How Treatment Affects You!"))
                 
@@ -543,11 +568,11 @@ to reduce these barriers.
                 
               ),
               fluidRow(
-                #column(4,
+                column(12,
                        #hr(),
                        h5("First, choose your Property Value and Fire Risk Profile"),
                        p("You can either use our predicted values listed above, or choose your own values!")
-                       #)
+                       )
               ),
               fluidRow(
                 column(4,
@@ -578,20 +603,24 @@ to reduce these barriers.
                 
                 column(4,
                        hr(),
-                       #sliderInput("FireSev2", "Custom FireSev Value222", min = 0.1, max = 1, value = 0.4, step = 0.1),
-                       p("After Selecting treatment, this is your probability for complete loss should fire occur on your parcel"),
+                       h4("Property Fire Severity"),
+                       p("This is value refers to the damage potential of a fire on your property, utilizing different treatment intensities on a community level can affect this value"),
                        tableOutput("NewSev"),
-                       p("This is the 'evenly shared' cost of treatment based on desired treatment extent"),
+                       h4("Treatment Costs"),
+                       p("This is the 'evenly shared' cost of treatment based on desired community level of treatment "),
                        tableOutput("TreatChoice"),
+                       h4("Post-treatment Expected Financial Losses"),
                        p("After selecting treatment, this is your expected losses through 2050"),
                        tableOutput("DiffNTa")
                        
                 ),
                 column(4,
                        hr(),
-                       p("This is amount of money saved (negative = savings) from avoided fire damages through treatment"),
+                       h4("Avoided Fire Damages"),
+                       p("This is amount of money saved from avoided fire damages due to treatment"),
                        tableOutput("DiffNT"),
-                       p("This is the difference between your treatment costs and savings (i dont know whats good maybe negative?)"),
+                       h4("Net Benefits of Treatment"),
+                       p("This is the difference between your treatment costs and savings due to avoided fire damage"),
                        tableOutput("netgain")
                        )
               )#,
