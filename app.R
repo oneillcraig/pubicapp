@@ -80,7 +80,7 @@ cond_class <- cond_df %>%
   select(Departure)
 
 condNames <- unique(cond_class$Departure)
-palcond <- colorFactor(palette = c("yellow","orange","red"), domain = condNames)
+palcond <- colorFactor(palette = "red", domain = condNames)
 
 fireregime <- st_read(dsn = ".", layer = "Fire_Regimes_Mod")
 regime_df <- st_transform(fireregime, "+init=epsg:4326")
@@ -92,12 +92,15 @@ Low_Severity <- regime_class %>%
 Mid_Severity <- regime_class %>%
   filter(FireRegime == "III - Mixed Severity FIre")
 High_Severity <- regime_class %>%
-  filter(FireRegime == "IV = High Severity Fire")
+  filter(FireRegime == "IV - High Severity Fire")
 
 SAF_Cover <- st_read(dsn = ".", layer = "ForestCover")
 SAF_Cover_df <- st_transform(SAF_Cover, "+init=epsg:4326")
 SAF_class <- SAF_Cover_df %>%
   select(SAF_Name)
+
+#ponderosa <- SAF_class %>% 
+  #select(SAF_class, SAF_Name == "Pacific Pondersa Pine")
 
 dinkey_boundary <- st_read(dsn = ".", layer = "DinkeyBoundary")
 dinkey_df <- st_transform(dinkey_boundary, "+init=epsg:4326")
@@ -106,8 +109,7 @@ SAFNames <- unique(SAF_class$SAF_Name)
 palrainbow <- colorFactor(palette = rainbow(18), domain = SAFNames)
 
 RegimeNames <- unique(fireregime$FireRegime)
-palfireregime <- colorFactor(palette = c("burlywood4", "yellow","orange","red", "darkgrey", "deepskyblue"), domain = RegimeNames)
-
+palfireregime <- colorFactor(palette = "yellow", domain = RegimeNames)
 
 Subset_2000 <- read.csv("Subset_2000.csv")
 
@@ -337,14 +339,14 @@ to reduce these barriers.
                 
                 
                 
-                box(p("This figure shows the dominant vegetation classes across the Dinkey Landscape, with private lands overlaying the map. Vegetation type can significantly impact fire behavior."), width = 12)
+                box(p("This figure shows the dominant vegetation classes across the Dinkey Landscape, with private lands overlaying the map. Vegetation type can significantly impact fire behavior. Trees that grow to have larger trunk areas grow thicker bark, which allows them to endure naturally occuring, low severity fires. Shorter trees and shrubs, which have thinner bark and low-hanging foliage, are more susceptible to fire damage and can result in more severe fires.", width = 12)
                 
                 
                 
             
               )
       
-              ),
+              )),
       
       tabItem(tabName = "tab_5",
               fluidRow(
@@ -393,10 +395,7 @@ to reduce these barriers.
                       value = 2050,
                       sep = "")),
         
-        box(p("This figure shows the values of treating 21% of the landscape 
-              for carbon sequestration based on the 2018 market value for carbon 
-              credits in California. Users can select which climate projection 
-              they wish to use, and which year they wish to see values for."), width = 6)
+        box(p("This figure shows the difference in value of forest carbon sequestration, based on the 2018 market value for carbon credits in California, after treating 21% of the landscape. Users can select which climate projection they wish to use, and which year they wish to see values for. Note that the value for carbon sequestration is negative for the first year of treatment, which coincides with a large thinning event. Over time, properly thinned forests amass a greater amount of biomass (e.g. carbon) than unthinned forests, which is condensed into fewer, but larger growing trees. Properly thinned forests are also less susceptible to high-intensity wildfire, which would otherwise reduce the amount of carbon a forest can sequester over time."), width = 6)
         )
       
       ),
@@ -717,8 +716,12 @@ to reduce these barriers.
 ##########CostCalculator End################
       )
     )
-  )
 )
+)
+
+
+
+
 
 
     
@@ -813,17 +816,29 @@ server <- function(input, output){
       addPolygons(weight = 0.5,
                   color = "black",
                   fillColor = ~palfireregime(RegimeNames),
-                  fillOpacity = 0.5) %>%
+                  fillOpacity = 0.5,
+                  group = "Historical Fire Regime") %>%
       addPolygons(data = dinkey_df,
                   weight = 1,
                   color = "black",
-                  fillColor = "transparent") %>%
+                  fillColor = "transparent",
+                  group = "Dinkey Boundary") %>%
       addPolygons(data = private_tclass,
-                  weight = 0.5,
+                  weight = 1,
                   color = "black",
-                  fillColor = "yellow",
-                  fillOpacity = 0.3)})
-
+                  fillColor = "darkblue",
+                  fillOpacity = 0.5,
+                  group = "Private Parcels") %>%
+      
+      
+      addLayersControl(
+        baseGroups = c("Historical Fire Regime"),
+        overlayGroups = c("Dinkey Boundary", "Private Parcels"),
+        options = layersControlOptions(collapsed = FALSE)
+      )
+    
+    
+  })
   
 ##### ALSO FIRE HISTORY #####    
   output$my_graph7 <- renderLeaflet({
@@ -844,16 +859,28 @@ server <- function(input, output){
       addPolygons(weight = 0.5,
                   color = "black",
                   fillColor = ~palcond(condNames),
-                  fillOpacity = 0.5) %>%
+                  fillOpacity = 0.5,
+                  group = "Change in Fire Regime") %>%
       addPolygons(data = dinkey_df,
                   weight = 1,
                   color = "black",
-                  fillColor = "transparent") %>%
+                  fillColor = "transparent",
+                  group = "Dinkey Boundary") %>%
       addPolygons(data = private_tclass,
                   weight = 0.5,
                   color = "black",
-                  fillColor = "yellow",
-                  fillOpacity = 0.3)})
+                  fillColor = "darkblue",
+                  fillOpacity = 0.5,
+                  group = "Private Parcels") %>%
+      
+      addLayersControl(
+        baseGroups = c("Change in Fire Regime"),
+        overlayGroups = c("Dinkey Boundary", "Private Parcels"),
+        options = layersControlOptions(collapsed = FALSE)
+      )
+    
+    
+  })
 
   
 #### FOREST COVER ######  
@@ -874,6 +901,12 @@ server <- function(input, output){
                   fillColor = ~palrainbow(SAFNames),
                   fillOpacity = 0.5,
                   group = "Vegetation") %>%
+     # addPolygons(data = ponderosa,
+      # weight = 0.5,
+      #color = "black",
+      #fillColor = "green",
+      #fillOpacity = 0.5,
+      #group = "Ponderosa") %>%
       addPolygons(data = private_tclass,
                   weight = 2,
                   color = "white",
@@ -886,7 +919,7 @@ server <- function(input, output){
       
   
       addLayersControl(
-        baseGroups = c("Vegetation"),
+        baseGroups = c("Fire Resistant", "Not Fire Resistant", "All Vegetation"),
         overlayGroups = c("Dinkey Boundary", "Private Parcels"),
         options = layersControlOptions(collapsed = FALSE)
       )
@@ -950,7 +983,7 @@ server <- function(input, output){
     Years <- input$Year 
     pick_model <- input$Climate_Model
     ggplot(subset(carbon, Year == Years & Climate_Model == pick_model), aes(x = Discount_Rate, y = DifferenceToDate)) +
-      geom_col(aes(fill = Discount_Rate)) +
+      geom_col(fill = c("darkblue", "lightblue")) +
       theme_bw(base_size = 13) +
       ylab("Cumulative Value ($US Millions)") +
       xlab("Discount Rate (%)") + 
@@ -971,7 +1004,7 @@ server <- function(input, output){
     pick_treatment <- input$Treatment_Type
     pick_model2 <- input$Climate_Model2
     ggplot(subset(cba, Stakeholder == Stakeholders & Treatment_Type == pick_treatment & Climate_Model2 == pick_model2), aes(x = Discount_Rate, y = NPV)) +
-      geom_col(aes(fill = Discount_Rate)) +
+      geom_col(fill = c("darkgreen", "lightgreen")) +
       theme_bw(base_size = 13) +
       ylab("Net Value (US$ Millions)") +
       #scale_fill_manual(name="Treatment", values = c("SDI 300" = "cyan3", "SDI 260" = "purple")) +
