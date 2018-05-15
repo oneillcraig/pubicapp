@@ -99,14 +99,62 @@ SAF_Cover_df <- st_transform(SAF_Cover, "+init=epsg:4326")
 SAF_class <- SAF_Cover_df %>%
   select(SAF_Name)
 
-#ponderosa <- SAF_class %>% 
-  #select(SAF_class, SAF_Name == "Pacific Pondersa Pine")
+SAFNames <- unique(SAF_class$SAF_Name)
+palrainbow <- colorFactor(palette = rainbow(18), domain = SAFNames)
+
+
+Aspen <- SAF_Cover_df %>%
+  select(SAF_Name) %>%
+  filter(SAF_Name == "Aspen")
+Blue_Oak <- SAF_Cover_df %>%
+  select(SAF_Name) %>%
+  filter(SAF_Name == "Blue Oak - Gray Pine")
+Black_Oak <- SAF_Cover_df %>%
+  select(SAF_Name) %>%
+  filter(SAF_Name == "California Black Oak")
+Coast_Live_Oak <- SAF_Cover_df %>%
+  select(SAF_Name) %>%
+  filter(SAF_Name == "California Coast Live Oak")
+Canyon_Live_Oak <- SAF_Cover_df %>%
+  select(SAF_Name) %>%
+  filter(SAF_Name == "California Canyon Live Oak")
+Cotton_Willow <- SAF_Cover_df %>%
+  select(SAF_Name) %>%
+  filter(SAF_Name == "Cottonwood - Willow")
+HardChap <- SAF_Cover_df %>%
+  select(SAF_Name) %>%
+  filter(SAF_Name == "Hard Chaparral")
+Jeffrey <- SAF_Cover_df %>%
+  select(SAF_Name) %>%
+  filter(SAF_Name == "Jeffrey Pine")
+Lodgepole <- SAF_Cover_df %>%
+  select(SAF_Name) %>%
+  filter(SAF_Name == "Lodgepole Pine")
+Hemlock <- SAF_Cover_df %>%
+  select(SAF_Name) %>%
+  filter(SAF_Name == "Mountain Hemlock")
+Red_Fir <- SAF_Cover_df %>%
+  select(SAF_Name) %>%
+  filter(SAF_Name == "Red Fir")
+Mixed_Conifer <- SAF_Cover_df %>%
+  select(SAF_Name) %>%
+  filter(SAF_Name == "Sierra Nevada Mixed Conifer")
+Ponderosa <- SAF_Cover_df %>%
+  select(SAF_Name) %>%
+  filter(SAF_Name == "Pacific Ponderosa Pine")
+Western_White_Pine <- SAF_Cover_df %>%
+  select(SAF_Name) %>%
+  filter(SAF_Name == "Western White Pine")
+White_Fir <- SAF_Cover_df %>%
+  select(SAF_Name) %>%
+  filter(SAF_Name == "White Fir")
+Whitebark_Pine <- SAF_Cover_df %>%
+  select(SAF_Name) %>%
+  filter(SAF_Name == "Whitebark Pine")
 
 dinkey_boundary <- st_read(dsn = ".", layer = "DinkeyBoundary")
 dinkey_df <- st_transform(dinkey_boundary, "+init=epsg:4326")
 
-SAFNames <- unique(SAF_class$SAF_Name)
-palrainbow <- colorFactor(palette = rainbow(18), domain = SAFNames)
 
 RegimeNames <- unique(fireregime$FireRegime)
 palfireregime <- colorFactor(palette = "yellow", domain = RegimeNames)
@@ -895,32 +943,117 @@ server <- function(input, output){
                   fillColor = "grey",
                   fillOpacity = 0,
                   group = "Dinkey Boundary") %>%
-      addPolygons(data = SAF_class,
-                  weight = 0.5,
-                  color = "black",
-                  fillColor = ~palrainbow(SAFNames),
-                  fillOpacity = 0.5,
-                  group = "Vegetation") %>%
-     # addPolygons(data = ponderosa,
-      # weight = 0.5,
-      #color = "black",
-      #fillColor = "green",
-      #fillOpacity = 0.5,
-      #group = "Ponderosa") %>%
       addPolygons(data = private_tclass,
                   weight = 2,
-                  color = "white",
-                  fillColor = "yellow",
+                  color = "black",
+                  fillColor = "transparent",
                   fillOpacity = 0,
                   group = "Private Parcels") %>%
-      addLegend(pal = palrainbow, 
-                values = SAFNames,
-                title = "Forest Cover Types") %>%
+      addPolygons(data = Ponderosa,
+                  weight = 0.5,
+                  color = "black",
+                  fillColor = "darkgoldenrod1",
+                  fillOpacity = 0.5,
+                  group = "Fire Resistant") %>%
+      addPolygons(data = Aspen,
+                  weight = 0.5,
+                  color = "black",
+                  fillColor = "cadetblue1",
+                  fillOpacity = 0.5,
+                  group = "Not Fire Resistant") %>%
+      addPolygons(data = Blue_Oak,
+                  weight = 0.5,
+                  color = "black",
+                  fillColor = "coral2",
+                  fillOpacity = 0.5,
+                  group = "Fire Resistant") %>%
+      addPolygons(data = Coast_Live_Oak,
+                  weight = 0.5,
+                  color = "black",
+                  fillColor = "darksalmon",
+                  fillOpacity = 0.5,
+                  group = "Fire Resistant") %>%
+      addPolygons(data = Canyon_Live_Oak,
+                  weight = 0.5,
+                  color = "black",
+                  fillColor = "teal",
+                  fillOpacity = 0.5,
+                  group = "Fire Resistant") %>%
+      addPolygons(data = Blue_Oak,
+                  weight = 0.5,
+                  color = "black",
+                  fillColor = "darkorange3",
+                  fillOpacity = 0.5,
+                  group = "Firest Resistant") %>%
+      addPolygons(data = Hemlock,
+                  weight = 0.5,
+                  color = "black",
+                  fillColor = "darkseagreen1",
+                  fillOpacity = 0.5,
+                  group = "Not Fire Resistant") %>%
+      addPolygons(data = Cotton_Willow,
+                  weight = 0.5,
+                  color = "black",
+                  fillColor = "darkslategray2",
+                  fillOpacity = 0.5,
+                  group = "Not Fire Resistant") %>%
+      addPolygons(data = Jeffrey,
+                  weight = 0.5,
+                  color = "black",
+                  fillColor = "dodgerblue",
+                  fillOpacity = 0.5,
+                  group = "Not Fire Resistant") %>%
+      addPolygons(data = Lodgepole,
+                  weight = 0.5,
+                  color = "black",
+                  fillColor = "darkmagenta",
+                  fillOpacity = 0.5,
+                  group = "Fire Resistant") %>%
+      addPolygons(data = Red_Fir,
+                  weight = 0.5,
+                  color = "black",
+                  fillColor = "deepskyblue2",
+                  fillOpacity = 0.5,
+                  group = "Not Fire Resistant") %>%
+      addPolygons(data = Mixed_Conifer,
+                  weight = 0.5,
+                  color = "black",
+                  fillColor = "deeppink",
+                  fillOpacity = 0.5,
+                  group = "Fire Resistant") %>%
+      addPolygons(data = Western_White_Pine,
+                  weight = 0.5,
+                  color = "black",
+                  fillColor = "red",
+                  fillOpacity = 0.5,
+                  group = "Fire Resistant") %>%
+      addPolygons(data = White_Fir,
+                  weight = 0.5,
+                  color = "black",
+                  fillColor = "red",
+                  fillOpacity = 0.5,
+                  group = "Not Fire Resistant") %>%
+      addPolygons(data = Whitebark_Pine,
+                  weight = 0.5,
+                  color = "black",
+                  fillColor = "red",
+                  fillOpacity = 0.5,
+                  group = "Not Fire Resistant") %>%
+      addPolygons(data = HardChap,
+                  weight = 0.5,
+                  color = "black",
+                  fillColor = "red",
+                  fillOpacity = 0.5,
+                  group = "Not Fire Resistant") %>%
+      #addLegend("bottomright", 
+      #pal = palrainbow, 
+      #values = SAFNames,
+      #title = "Forest Cover Types") %>%
       
   
       addLayersControl(
-        baseGroups = c("Fire Resistant", "Not Fire Resistant", "All Vegetation"),
-        overlayGroups = c("Dinkey Boundary", "Private Parcels"),
+        baseGroups = c("Fire Resistant", "Not Fire Resistant"),
+        overlayGroups = c("Private Parcels", "Dinkey Boundary"),
         options = layersControlOptions(collapsed = FALSE)
       )
       
