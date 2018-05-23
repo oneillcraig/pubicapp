@@ -673,7 +673,7 @@ to reduce these barriers.
                        hr(),
                        h4("Avoided Fire Damages"),
                        p("This is amount of money saved from avoided fire damages due to treatment"),
-                       tableOutput("DiffNT"),
+                       #tableOutput("DiffNTa"),
                        h4("Net Benefits of Treatment"),
                        p("This is the difference between your treatment costs and savings due to avoided fire damage"),
                        tableOutput("netgain")
@@ -1422,21 +1422,53 @@ server <- function(input, output){
   output$TreatChoice <- renderTable(addrTcost(),
                                     colnames = FALSE)
   
-  addrnet <- reactive({
-    a <- addresses3 %>% 
+#  addrnet <- reactive({
+#    a <- addresses3 %>% 
+#      subset(Addr1 == input$Addr1)%>% 
+#      subset(Treat == input$TreatExt) %>%  
+#      select(Improvement, LandValue, GA25, HVRA, Ntbase, TreatmentCost) %>% 
+#      mutate(Tot_NT_Loss = (Ntbase - (Improvement + LandValue) * GA25 * HVRA) - TreatmentCost) %>% 
+#      select(Tot_NT_Loss)
+#    
+#    a[,1] <- sapply(a[,1], function(x) paste0("$",format(round(x,2), nsmall = 2)))
+#    return(a)
+#  })
+  
+  #output$netgain <- renderTable(addrnet(),
+ #                               colnames = FALSE)  
+
+  
+##Update this part for the Avoided Costs Section  
+  addrAvoideda <- reactive({
+    a <- input$landvalue * input$FireProb2 #* input$FireSev2
+    #a <- as.data.frame(a)
+    b <- addressesCust %>% 
+      subset(Addr1 == input$Addr1) %>% 
+      subset(Treat == input$TreatExt) %>% 
+      select(HVRA)
+    b <- b[1,]
+    b <- as.numeric(b)
+    c <- addresses3 %>% #No Treatment Loss (Pulls Severity from Address Lookup)
+      subset(Addr1 == input$Addr1) %>% 
+      subset(Treat == "NT") %>% 
+      select(HVRA) #Pulls up the address based on the lookup, filters databse to that address and the NT HVRA value, pulls the HVRA.  Convert that to a numeric  
+    c <- c[1,]
+    c <- as.numeric(c) #No Treatment Alternative
+    ab <- as.data.frame(a*b) #After Treatment Fire Loss
+    abc <- as.data.frame(c - ab) #Savings
+    t <- addressesCust %>% 
       subset(Addr1 == input$Addr1)%>% 
       subset(Treat == input$TreatExt) %>%  
-      select(Improvement, LandValue, GA25, HVRA, Ntbase, TreatmentCost) %>% 
-      mutate(Tot_NT_Loss = (Ntbase - (Improvement + LandValue) * GA25 * HVRA) - TreatmentCost) %>% 
-      select(Tot_NT_Loss)
-    
-    a[,1] <- sapply(a[,1], function(x) paste0("$",format(round(x,2), nsmall = 2)))
-    return(a)
-  })
-  
-  output$netgain <- renderTable(addrnet(),
-                                colnames = FALSE)  
+      select(TreatmentCost)
+    abct <- as.data.frame(abc - t)
+    abct <- sapply(abct, function(x) paste0("$",format(round(x,2), nsmall = 2)))
+    return(abct)
+  })  
 
+  output$netgain <- renderTable(addrAvoideda(),
+                                colnames = FALSE)  
+  
+  
 }
   
   
