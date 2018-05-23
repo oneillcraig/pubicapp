@@ -92,7 +92,7 @@ Low_Severity <- regime_class %>%
 Mid_Severity <- regime_class %>%
   filter(FireRegime == "III - Mixed Severity FIre")
 High_Severity <- regime_class %>%
-  filter(FireRegime == "IV - High Severity Fire")
+  filter(FireRegime == "IV = High Severity Fire")
 
 SAF_Cover <- st_read(dsn = ".", layer = "ForestCover")
 SAF_Cover_df <- st_transform(SAF_Cover, "+init=epsg:4326")
@@ -362,8 +362,8 @@ to reduce these barriers.
                 box(withSpinner(leafletOutput("my_graph3", height = 432))),
                 box(title = "Historical Fire Regime",
                     selectInput("regime_class", 
-                                "Choose Regime Level:", 
-                                choices = unique(regime_class$FireRegime))),
+                    "Choose Regime Level:", 
+                    choices = unique(regime_class$FireRegime))),
                 box(p("This figure shows the change in fire regime compared to historical data. Users can select the level of change that they wish the map to show. Much of the Southern Sierra Nevada has had a significant increase in forest density, increasing the risk of high severity, catastrophic fire."), width = 6)
               ),
               
@@ -383,11 +383,8 @@ to reduce these barriers.
       
       tabItem(tabName = "tab_4",
               fluidRow(
-                box(withSpinner(leafletOutput("my_graph4", height = 700, width = 700))),
-                
-                
-                
-                box(p("This figure shows the dominant vegetation classes across the Dinkey Landscape, with private lands overlaying the map. Vegetation type can significantly impact fire behavior. Trees that grow to have larger trunk areas grow thicker bark, which allows them to endure naturally occuring, low severity fires. Shorter trees and shrubs, which have thinner bark and low-hanging foliage, are more susceptible to fire damage and can result in more severe fires.", width = 12)
+                box(withSpinner(leafletOutput("my_graph4", height = 432))),
+                box(p("This figure shows the dominant forest vegetation types across the Dinkey Landscape, with private lands overlaying the map. Vegetation type can significantly impact fire behavior, and as such vegetation types are often associated with characteristic fire regimes. More fire resistant vegetation types are those that are best characterized by being dominated by species of large trees. Larger trees are capable of growing wider trunks with thicker bark, which allows them to endure naturally occuring, low severity fires. Conversely, shorter vegetation types that are made up of shorter trees and shrubs, often with thinner bark and lower-hanging foliage, are more susceptible to fire damage. The map displays the current distribution of various forest vegetation classes, as assessed by the U.S. Forest Service. The groupings of fire resistant and not fire resistant are broad categorizations of forest type based on their typical associated fire regime. In fire resistant vegetation types, typically only the understory is burned. In non-fire resistant vegetation types, crown fires and stand-replacing fires are more common." , width = 6)
                 
                 
                 
@@ -861,11 +858,11 @@ server <- function(input, output){
 
     leaflet(regime_sub) %>% 
       addTiles() %>% 
-      addPolygons(weight = 0.5,
-                  color = "black",
-                  fillColor = ~palfireregime(RegimeNames),
-                  fillOpacity = 0.5,
-                  group = "Historical Fire Regime") %>%
+      #addPolygons(weight = 0.5,
+      #color = "black",
+      #fillColor = ~palfireregime(RegimeNames),
+      #fillOpacity = 0.5,
+      #group = "Historical Fire Regime") %>%
       addPolygons(data = dinkey_df,
                   weight = 1,
                   color = "black",
@@ -875,6 +872,24 @@ server <- function(input, output){
                   weight = 1,
                   color = "black",
                   fillColor = "darkblue",
+                  fillOpacity = 0.5,
+                  group = "Private Parcels") %>%
+      addPolygons(data = Low_Severity,
+                  weight = 1,
+                  color = "black",
+                  fillColor = "yellow",
+                  fillOpacity = 0.5,
+                  group = "Private Parcels") %>%
+      addPolygons(data = Mid_Severity,
+                  weight = 1,
+                  color = "black",
+                  fillColor = "orange",
+                  fillOpacity = 0.5,
+                  group = "Private Parcels") %>%
+      addPolygons(data = High_Severity,
+                  weight = 1,
+                  color = "black",
+                  fillColor = "red",
                   fillOpacity = 0.5,
                   group = "Private Parcels") %>%
       
@@ -1054,7 +1069,8 @@ server <- function(input, output){
       addLayersControl(
         baseGroups = c("Fire Resistant", "Not Fire Resistant"),
         overlayGroups = c("Private Parcels", "Dinkey Boundary"),
-        options = layersControlOptions(collapsed = FALSE)
+        options = layersControlOptions(collapsed = FALSE),
+        position = "bottomleft"
       )
       
       
