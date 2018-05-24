@@ -91,9 +91,10 @@ regime_class <- regime_df %>%
 Low_Severity <- regime_class %>%
   filter(FireRegime == "I - Low Severity Fire")
 Mid_Severity <- regime_class %>%
-  filter(FireRegime == "III - Mixed Severity Fire")
+  filter(FireRegime == "III - Mixed Severity FIre")
 High_Severity <- regime_class %>%
   filter(FireRegime == "IV = High Severity Fire")
+
 
 SAF_Cover <- st_read(dsn = ".", layer = "ForestCover")
 SAF_Cover_df <- st_transform(SAF_Cover, "+init=epsg:4326")
@@ -388,11 +389,12 @@ to reduce these barriers.
       
       tabItem(tabName = "tab_4",
               fluidRow(
-                box(withSpinner(leafletOutput("my_graph4", height = 432))),
+                box(withSpinner(leafletOutput("my_graph4", height = 500)), width = 12)),
+              fluidRow(
                 box(p("This figure shows the dominant forest vegetation types across the Dinkey Landscape, with private lands overlaying the map. Vegetation type can significantly impact fire behavior, and as such vegetation types are often associated with characteristic fire regimes. The groupings of fire resistant and not fire resistant are broad categorizations of forest type based on their typical associated fire regime. In fire resistant vegetation types, typically only the understory is burned. In non-fire resistant vegetation types, crown fires and stand-replacing fires are more common.", 
-                      p("More fire resistant vegetation types are those that are best characterized by being dominated by species of large trees. Larger trees are capable of growing wider trunks with thicker bark, which allows them to endure naturally occuring, low severity fires. Conversely, shorter vegetation types that are made up of shorter trees and shrubs, often with thinner bark and lower-hanging foliage, are more susceptible to fire damage. The map displays the current distribution of various forest vegetation classes, as assessed by the U.S. Forest Service." , width = 6)))
+                      p("More fire resistant vegetation types are those that are best characterized by being dominated by species of large trees. Larger trees are capable of growing wider trunks with thicker bark, which allows them to endure naturally occuring, low severity fires. Conversely, shorter vegetation types that are made up of shorter trees and shrubs, often with thinner bark and lower-hanging foliage, are more susceptible to fire damage. The map displays the current distribution of various forest vegetation classes, as assessed by the U.S. Forest Service.")), width = 12))
       
-              )),
+              ),
       
       tabItem(tabName = "tab_5",
               fluidRow(
@@ -864,6 +866,24 @@ server <- function(input, output){
       #fillColor = ~palfireregime(RegimeNames),
       #fillOpacity = 0.5,
       #group = "Historical Fire Regime") %>%
+      addPolygons(data = Low_Severity,
+                  weight = 1,
+                  color = "black",
+                  fillColor = "yellow",
+                  fillOpacity = 0.5,
+                  group = "Low Severity") %>%
+      addPolygons(data = Mid_Severity,
+                  weight = 1,
+                  color = "black",
+                  fillColor = "orange",
+                  fillOpacity = 0.5,
+                  group = "Mixed Severity") %>%
+      addPolygons(data = High_Severity,
+                  weight = 1,
+                  color = "black",
+                  fillColor = "red",
+                  fillOpacity = 0.5,
+                  group = "High Severity") %>%
       addPolygons(data = dinkey_df,
                   weight = 1,
                   color = "black",
@@ -875,29 +895,11 @@ server <- function(input, output){
                   fillColor = "darkblue",
                   fillOpacity = 0.5,
                   group = "Private Parcels") %>%
-      addPolygons(data = Low_Severity,
-                  weight = 1,
-                  color = "black",
-                  fillColor = "yellow",
-                  fillOpacity = 0.5,
-                  group = "Private Parcels") %>%
-      addPolygons(data = Mid_Severity,
-                  weight = 1,
-                  color = "black",
-                  fillColor = "orange",
-                  fillOpacity = 0.5,
-                  group = "Private Parcels") %>%
-      addPolygons(data = High_Severity,
-                  weight = 1,
-                  color = "black",
-                  fillColor = "red",
-                  fillOpacity = 0.5,
-                  group = "Private Parcels") %>%
       
       
       addLayersControl(
-        baseGroups = c("Historical Fire Regime"),
-        overlayGroups = c("Dinkey Boundary", "Private Parcels"),
+        #baseGroups = c("Historical Fire Regime"),
+        overlayGroups = c("Dinkey Boundary", "Private Parcels","Low Severity", "Mixed Severity", "High Severity"),
         options = layersControlOptions(collapsed = FALSE)
       )
     
@@ -953,18 +955,6 @@ server <- function(input, output){
 
     leaflet() %>% 
       addTiles() %>% 
-      addPolygons(data = dinkey_df,
-                  weight = 3,
-                  color = "black",
-                  fillColor = "grey",
-                  fillOpacity = 0,
-                  group = "Dinkey Boundary") %>%
-      addPolygons(data = private_tclass,
-                  weight = 2,
-                  color = "black",
-                  fillColor = "transparent",
-                  fillOpacity = 0,
-                  group = "Private Parcels") %>%
       addPolygons(data = Ponderosa,
                   weight = 0.5,
                   color = "black",
@@ -1033,7 +1023,7 @@ server <- function(input, output){
                   color = "black",
                   fillColor = palrainbow("Lodgepole Pine"),
                   fillOpacity = 0.5,
-                  group = "Fire Resistant",
+                  group = "Not Fire Resistant",
                   label = "Lodgepole Pine") %>%
       addPolygons(data = Red_Fir,
                   weight = 0.5,
@@ -1054,7 +1044,7 @@ server <- function(input, output){
                   color = "black",
                   fillColor = palrainbow("Western White Pine"),
                   fillOpacity = 0.5,
-                  group = "Fire Resistant",
+                  group = "Not Fire Resistant",
                   label = "Western White Pine") %>%
       addPolygons(data = White_Fir,
                   weight = 0.5,
@@ -1081,12 +1071,137 @@ server <- function(input, output){
                 opacity = 1,
                 #group = "Not Fire Resistant",
                 position = "bottomright") %>%
+      #This next sets allows for individual layers as groups.
+      addPolygons(data = Ponderosa,
+                  weight = 0.5,
+                  color = "black",
+                  fillColor = palrainbow("Pacific Ponderosa Pine"),
+                  fillOpacity = 0.5,
+                  group = "Pacific Ponderosa Pine",
+                  label = "Pacific Ponderosa Pine") %>%
+      addPolygons(data = Aspen,
+                  weight = 0.5,
+                  color = "black",
+                  fillColor = palrainbow("Aspen"),
+                  fillOpacity = 0.5,
+                  group = "Aspen",
+                  label = "Aspen") %>%
+      addPolygons(data = Blue_Oak,
+                  weight = 0.5,
+                  color = "black",
+                  fillColor = palrainbow("Blue Oak - Gray Pine"),
+                  fillOpacity = 0.5,
+                  group = "Blue Oak - Gray Pine",
+                  label = "Blue Oak - Gray Pine") %>%
+      addPolygons(data = Coast_Live_Oak,
+                  weight = 0.5,
+                  color = "black",
+                  fillColor = palrainbow("California Coast Live Oak"),
+                  fillOpacity = 0.5,
+                  group = "California Coast Live Oak",
+                  label = "California Coast Live Oak") %>%
+      addPolygons(data = Canyon_Live_Oak,
+                  weight = 0.5,
+                  color = "black",
+                  fillColor = palrainbow("Canyon Live Oak"),
+                  fillOpacity = 0.5,
+                  group = "Canyon Live Oak",
+                  label = "Canyon Live Oak")%>%
+      addPolygons(data = Mixed_SubAlp,
+                  weight = 0.5,
+                  color = "black",
+                  fillColor = palrainbow("California Mixed Subalpine"),
+                  fillOpacity = 0.5,
+                  group = "California Mixed Subalpine",
+                  label = "California Mixed Subalpine") %>%
+      addPolygons(data = Hemlock,
+                  weight = 0.5,
+                  color = "black",
+                  fillColor = palrainbow("Mountain Hemlock"),
+                  fillOpacity = 0.5,
+                  group = "Moutain Hemlock",
+                  label = "Moutain Hemlock") %>%
+      addPolygons(data = Cotton_Willow,
+                  weight = 0.5,
+                  color = "black",
+                  fillColor = palrainbow("Cottonwood - Willow"),
+                  fillOpacity = 0.5,
+                  group = "Cottonwood - Willow",
+                  label = "Cottonwood - Willow") %>%
+      addPolygons(data = Jeffrey,
+                  weight = 0.5,
+                  color = "black",
+                  fillColor = palrainbow("Jeffrey Pine"),
+                  fillOpacity = 0.5,
+                  group = "Jeffrey Pine",
+                  label = "Jeffrey Pine") %>%
+      addPolygons(data = Lodgepole,
+                  weight = 0.5,
+                  color = "black",
+                  fillColor = palrainbow("Lodgepole Pine"),
+                  fillOpacity = 0.5,
+                  group = "Lodgepole Pine",
+                  label = "Lodgepole Pine") %>%
+      addPolygons(data = Red_Fir,
+                  weight = 0.5,
+                  color = "black",
+                  fillColor = palrainbow("Red Fir"),
+                  fillOpacity = 0.5,
+                  group = "Red Fir",
+                  label = "Red Fir") %>%
+      addPolygons(data = Mixed_Conifer,
+                  weight = 0.5,
+                  color = "black",
+                  fillColor = palrainbow("Sierra Nevada Mixed Conifer"),
+                  fillOpacity = 0.5,
+                  group = "Sierra Nevada Mixed Conifer",
+                  label = "Sierra Nevada Mixed Conifer") %>%
+      addPolygons(data = Western_White_Pine,
+                  weight = 0.5,
+                  color = "black",
+                  fillColor = palrainbow("Western White Pine"),
+                  fillOpacity = 0.5,
+                  group = "Western White Pine",
+                  label = "Western White Pine") %>%
+      addPolygons(data = White_Fir,
+                  weight = 0.5,
+                  color = "black",
+                  fillColor = palrainbow("White Fir"),
+                  fillOpacity = 0.5,
+                  group = "White Fir",
+                  label = "White Fir") %>%
+      addPolygons(data = Whitebark_Pine,
+                  weight = 0.5,
+                  color = "black",
+                  fillColor = palrainbow("Whitebark Pine"),
+                  fillOpacity = 0.5,
+                  group = "Whitebark Pine",
+                  label = "Whitebark Pine") %>%
+      addPolygons(data = HardChap,
+                  weight = 0.5,
+                  color = "black",
+                  fillColor = palrainbow("Hard Chaparral"),
+                  fillOpacity = 0.5,
+                  group = "Hard Chaparral",
+                  label = "Hard Chaparral") %>%
+      addPolygons(data = dinkey_df,
+                  weight = 3,
+                  color = "black",
+                  fillColor = "grey",
+                  fillOpacity = 0,
+                  group = "Dinkey Boundary") %>%
+      addPolygons(data = private_tclass,
+                  weight = 2,
+                  color = "black",
+                  fillColor = "transparent",
+                  fillOpacity = 0,
+                  group = "Private Parcels") %>%
    
     
       addLayersControl(
         #baseGroups = c("Fire Resistant", "Not Fire Resistant"),
-        overlayGroups = c("Private Parcels", "Dinkey Boundary", "Fire Resistant", "Not Fire Resistant"),
-        options = layersControlOptions(collapsed = FALSE),
+        overlayGroups = c("Private Parcels", "Dinkey Boundary", "Fire Resistant", "Not Fire Resistant", "Hard Chaparral","Whitebark Pine", "White Fir","Western White Pine", "Sierra Nevada Mixed Conifer", "Red Fir", "Lodgepole Pine", "Jeffrey Pine", "Cottonwood - Willow",  "Moutain Hemlock",  "California Mixed Subalpine", "Canyon Live Oak", "California Coast Live Oak", "Blue Oak - Gray Pine", "Aspen",  "Pacific Ponderosa Pine"),
+        options = layersControlOptions(collapsed = TRUE),
         position = "bottomleft") %>% 
       
       hideGroup(c("Fire Resistant", "Not Fire Resistant"))
