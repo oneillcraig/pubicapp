@@ -317,7 +317,10 @@ to reduce these barriers.
                     selectInput("regime_class", 
                                 "Choose Regime Level:", 
                                 choices = unique(regime_class$FireRegime))),
-                box(p("This figure shows the change in fire regime compared to historical data. Users can select the level of change that they wish the map to show. Much of the Southern Sierra Nevada has had a significant increase in forest density, increasing the risk of high severity, catastrophic fire."), width = 6)
+                box(p("This figure shows the historical fire regimes across the Dinkey Landscape. 
+                      Users can select which fire regime the map will show. 
+                      Much of the Southern Sierra Nevada was historically 
+                      dominated by low severity, high frequency fires."), width = 6)
               ),
               
               fluidRow(
@@ -327,10 +330,7 @@ to reduce these barriers.
                                 "Choose Level of Change:", 
                                 choices = unique(cond_class$Departure))),
                 
-                box(p("This figure shows the historical fire regimes across the Dinkey Landscape. 
-                      Users can select which fire regime the map will show. 
-                      Much of the Southern Sierra Nevada was historically 
-                      dominated by low severity, high frequency fires."), width = 6)
+                box(p("This figure shows the change in fire regime compared to historical data. Users can select the level of change that they wish the map to show. Much of the Southern Sierra Nevada has had a significant increase in forest density, increasing the risk of high severity, catastrophic fire."), width = 6)
               )
       ),
       
