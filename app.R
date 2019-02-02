@@ -574,30 +574,22 @@ ui <- dashboardPage(skin = ("green"),
                                 fluidRow(
                                   column(4,
                                          hr(),
-                                         #h4("Input Custom Total Property Value"),
-                                         numericInput("landvalue", "Input Custom Total Property Value", value = 0),
+                                         #h4("Input Total Property Value"),
+                                         numericInput("landvalue", "Input Custom Total Property Value", value = 0)),
+                                  column(4,
+                                         hr(),
                                          selectInput("TreatExt",
                                                      "Choose Treatment Extent:",
                                                      choices = c("NT",
                                                                  "Min",
                                                                  "Mid",
-                                                                 "Opt")),
+                                                                 "Opt"))),       
+                                  column(4,
+                                         hr(),
                                          sliderInput("FireProb2", "Choose your custom Fire Ignition Probability", min = 0.1, max = 1, value = 0.5, step = 0.1)#,
                                          #sliderInput("FireSev2", "Custom FireSev Value", min = 0.1, max = 1, value = 0.4, step = 0.1)
-                                  ),
-                                  #column(4,
-                                  #       hr(),
-                                  
-                                  
-                                  #),
-                                  
-                                  #column(4,
-                                  #       hr(),
-                                  #       h4("Predicted Fire Severity"),
-                                  #       p("Predicted Damage Potential of Fire should Fire Occur without Treatment!")
-                                  #       
-                                  #),
-                                  
+                                  )),
+                                fluidRow(  
                                   column(4,
                                          hr(),
                                          h4("Property Fire Severity"),
