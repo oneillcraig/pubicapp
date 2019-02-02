@@ -314,7 +314,8 @@ ui <- dashboardPage(skin = ("green"),
                                   box(title = "Historical Fire Regime",
                                       selectInput("regime_class", 
                                                   "Choose Regime Level:", 
-                                                  choices = unique(regime_class$FireRegime))),
+                                                  choices = unique(regime_class$FireRegime)),
+                                      submitButton("Submit")),
                                   box(p("This figure shows the historical fire regimes across the Dinkey Landscape. 
                                         Users can select which fire regime the map will show. 
                                         Much of the Southern Sierra Nevada was historically 
@@ -326,7 +327,8 @@ ui <- dashboardPage(skin = ("green"),
                                   box(title = "Change in Fire Regime",
                                       selectInput("cond_class", 
                                                   "Choose Level of Change:", 
-                                                  choices = unique(cond_class$Departure))),
+                                                  choices = unique(cond_class$Departure)),
+                                      submitButton("Submit")),
                                   
                                   box(p("This figure shows the change in fire regime compared to historical data. Users can select the level of change that they wish the map to show. Much of the Southern Sierra Nevada has had a significant increase in forest density, increasing the risk of high severity, catastrophic fire."), width = 6)
                                   )
@@ -354,7 +356,8 @@ ui <- dashboardPage(skin = ("green"),
                                   box(title = "Private Lands Fire Severity",
                                       selectInput("treatment", 
                                                   "Choose Treatment Type:", 
-                                                  choices = unique(DataT$Treatment))),
+                                                  choices = unique(DataT$Treatment)),
+                                      submitButton("Submit")),
                                   
                                   box(p("This figure shows fire severities under a scenario when no fuel treatments occur, and a scenario when 21% of the landscape is treated. Fire severities of 4, 5, and 6 indicate a high severity fire."), width = 12)
                                 )
@@ -372,7 +375,9 @@ ui <- dashboardPage(skin = ("green"),
                                   
                                   box(selectInput("Stakeholder", "Choose Stakeholder:", choices = unique(cba$Stakeholder)),
                                       selectInput("Treatment_Type", "Choose Treatment Type:", choices = unique(cba$Treatment_Type)),
-                                      selectInput("Climate_Model2", "Choose Climate Model:", choices = unique(cba$Climate_Model2)), width = 6),
+                                      selectInput("Climate_Model2", "Choose Climate Model:", choices = unique(cba$Climate_Model2)), 
+                                      submitButton("Submit"),
+                                      width = 6),
                                   
                                   box(p("This figure shows the total value of treating 21% of the landscape for each stakeholder under 
                                         two different treatment types and two different climate projections. Users can select 
@@ -392,7 +397,8 @@ ui <- dashboardPage(skin = ("green"),
                                                 min = 2018,
                                                 max = 2050,
                                                 value = 2050,
-                                                sep = "")),
+                                                sep = ""),
+                                    submitButton("Submit")),
                                   
                                   box(p("This figure shows the difference in value of forest carbon sequestration, based on the 2018 market value for carbon credits in California, after treating 21% of the landscape. Users can select which climate projection they wish to use, and which year they wish to see values for. Note that the value for carbon sequestration is negative for the first year of treatment, which coincides with a large thinning event. Over time, properly thinned forests amass a greater amount of biomass (e.g. carbon) than unthinned forests, which is condensed into fewer, but larger growing trees. Properly thinned forests are also less susceptible to high-intensity wildfire, which would otherwise reduce the amount of carbon a forest can sequester over time."), width = 6)
                                 )
