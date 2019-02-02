@@ -421,9 +421,9 @@ ui <- dashboardPage(skin = ("green"),
                                                         multiple = FALSE,
                                                         #selectize = TRUE,
                                                         options = list(
-                                                          maxOptions = 1,
-                                                          placeholder = 'Please type address here',
-                                                          onInitialize = I('function() { this.setValue(""); }')
+                                                          maxOptions = 1#,
+                                                          #placeholder = 'Please type address here',
+                                                          #onInitialize = I('function() { this.setValue(""); }')
                                                         )
                                          ),
                                          submitButton("Look up Info")
@@ -575,7 +575,7 @@ ui <- dashboardPage(skin = ("green"),
                                   column(4,
                                          hr(),
                                          #h4("Input Total Property Value"),
-                                         numericInput("landvalue", "Input Custom Total Property Value", value = 0)),
+                                         numericInput("landvalue", "Input Total Property Value", value = 0)),
                                   column(4,
                                          hr(),
                                          selectInput("TreatExt",
