@@ -411,26 +411,6 @@ ui <- dashboardPage(skin = ("green"),
                                   h1("Property Owner Fire Risk and Cost Calculator")
                                 ),
                                 fluidRow(
-                                  
-                                  column(4,
-                                         h4("1.  Search Property"),
-                                         p("First, look up the expected Values for your Property")
-                                  ),
-                                  
-                                  # Sidebar with a Address Sections
-                                  column(4,
-                                         h4("2.  Expected Values"),
-                                         p("Review your predicted values for your property")
-                                  ),
-                                  
-                                  column(4,
-                                         h4("3.  Enter Custom Values"),
-                                         p("if you feel these values are not representative of your property, you will be able to input custom values at the bottom of this calculator.  None of the data used for this calculator is saved, stored, or shared with anyone.")
-                                  )
-                                  
-                                ),
-                                #Address Confirmation
-                                fluidRow(
                                   column(4,
                                          #style = "background-color:#dfdedc",
                                          hr(),
@@ -445,23 +425,27 @@ ui <- dashboardPage(skin = ("green"),
                                                           placeholder = 'Please type address here',
                                                           onInitialize = I('function() { this.setValue(""); }')
                                                         )
-                                         )#,
-                                         #submitButton("Look up Info")
+                                         ),
+                                         submitButton("Look up Info")
                                   ),
                                   column(4,
                                          #style = "background-color:#dfdedc",
                                          hr(),
                                          h4("City, State, Zip Code"),
+                                         h4(" "),
                                          tableOutput("Address2")
                                   ),
                                   column(4,
                                          #style = "background-color:#dfdedc",
                                          hr(),
                                          h4(),
-                                         h4("Confirm Address"),
+                                         h4(""),
                                          p("")
                                   )
                                 ),
+                                
+                                #Address Confirmation
+                                
                                 fluidRow(
                                   #column(4,
                                   #       hr(),
@@ -501,20 +485,20 @@ ui <- dashboardPage(skin = ("green"),
                                   column(4,
                                          hr(),
                                          h4("Predicted Fire Ignition Probability"),
-                                         p("This is the probability that fire will occur on your land between 2018 and 2050"),
-                                         tableOutput("FireIgnit1")
+                                         tableOutput("FireIgnit1"),
+                                         p("This is the probability that fire will occur on your land between 2018 and 2050")
                                   ),
                                   column(4,
                                          hr(),
                                          h4("Predicted Fire Severity Probability"),
-                                         p("Modeled fire severity predicts to destructive potential of a fire should it occur on your land"),
-                                         tableOutput("FireSev1")
+                                         tableOutput("FireSev1"),
+                                         p("Modeled fire severity predicts to destructive potential of a fire should it occur on your land")
                                   ),
                                   column(4,
                                          hr(),
                                          h4("Predicted Loss in Value"),
-                                         p("If no treatment is done, this is your predicted loss in total property value due to fire through the year 2050"),
-                                         tableOutput("Loss1")
+                                         tableOutput("Loss1"),
+                                         p("If no treatment is done, this is your predicted loss in total property value due to fire through the year 2050")
                                   )
                                   #column(4,
                                   #       hr(),
