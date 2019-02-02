@@ -586,27 +586,37 @@ ui <- dashboardPage(skin = ("green"),
                                                                  "Opt"))),       
                                   column(4,
                                          hr(),
-                                         sliderInput("FireProb2", "Choose your custom Fire Ignition Probability", min = 0.1, max = 1, value = 0.5, step = 0.1)#,
+                                         sliderInput("FireProb2", "Choose your custom Fire Ignition Probability", min = 0.1, max = 1, value = 0.5, step = 0.1),
+                                         submitButton("Calculate Effects!")
                                          #sliderInput("FireSev2", "Custom FireSev Value", min = 0.1, max = 1, value = 0.4, step = 0.1)
                                   )),
                                 fluidRow(  
                                   column(4,
                                          hr(),
                                          h4("Property Fire Severity"),
-                                         p("This is value refers to the damage potential of a fire on your property, utilizing different treatment intensities on a community level can affect this value"),
                                          tableOutput("NewSev"),
-                                         h4("Treatment Costs"),
-                                         p("This is the 'evenly shared' cost of treatment based on desired community level of treatment "),
-                                         tableOutput("TreatChoice"),
-                                         h4("Post-treatment Expected Financial Losses"),
-                                         p("After selecting treatment, this is your expected losses through 2050"),
-                                         tableOutput("DiffNTa")
-                                         
-                                  ),
+                                         p("This is value refers to the damage potential of a fire on your property, utilizing different treatment intensities on a community level can affect this value")),
                                   column(4,
                                          hr(),
-                                         h4("Avoided Fire Damages"),
-                                         p("This is amount of money saved from avoided fire damages due to treatment"),
+                                         h4("Treatment Costs"),
+                                         tableOutput("TreatChoice"),
+                                         p("This is the 'evenly shared' cost of treatment based on desired community level of treatment ")),
+                                  column(4,
+                                         hr(),       
+                                         h4("Post-treatment Expected Financial Losses"),
+                                         tableOutput("DiffNTa"),
+                                         p("After selecting treatment, this is your expected losses through 2050")
+                                         
+                                         
+                                  )),
+                                #fluidRow(
+                                #  column(4,
+                                #         hr(),
+                                #         h4("Avoided Fire Damages"),
+                                #         p("This is amount of money saved from avoided fire damages due to treatment"))),
+                                fluidRow(
+                                  column(4,
+                                         hr(),
                                          #tableOutput("DiffNTa"),
                                          h4("Net Benefits of Treatment"),
                                          p("This is the difference between your treatment costs and savings due to avoided fire damage"),
